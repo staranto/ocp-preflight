@@ -1,0 +1,11 @@
+---
+# This is weak sauce.  Should probably really look
+# at actually pulling an image.  What about 5000?
+- name: "Make sure public registries are reachable"
+  shell:
+    cmd: nc -z -w 1 {{ item.key }} 80 && nc -z -w 1 {{ item.key }} 443
+  loop: "{{ lookup('file', pullSecretFile) | from_json | json_query('auths') | dict2items }}"
+  loop_control:
+    label: "Checking access to {{ item.key }}"
+...
+

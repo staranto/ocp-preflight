@@ -1,0 +1,162 @@
+# ocp-preflight
+# https://github.com/mysidlabs/ocp-preflight
+
+# The main purpose of this tool is to do a pre-flight check
+# prior to starting an OCP install. Experience says that the
+# large majority of problems are due to environmental
+# prerequesites not being met - unresolvable host names,
+# closed ports, missing or inaccessible bootstrap images,
+# etc.  So, ocp-preflight can be used to check much (but not
+# all) of those prereqs.
+
+# ocp-preflight can also optionally create the
+# install-config.yaml, manifest and Ignition files. What's
+# more, each of those files steps will be backed up before
+# the negligient openshift-installer blindly deletes them.
+
+# We're intentionally avoiding driving the actual install
+# itself.  That's some medieval stuff and best left up 
+# to a human.
+
+# We're also leaving out explicit, detailed instructions on
+# using this tool, so that time is taken to understand what
+# the install process is all about and what role
+# ocp-preflight plays.
+
+# Usage:
+# 1. git clone https://github.com/staranto/ocp-preflight
+# 2. Review, understand and then edit vars/vars.yaml.  Then
+#    review it again.  Then have someone else review it and
+#    check your work.
+# 3. ansible-playbook ocp-preflight.yaml
+ 
+---
+- name: "Preflight check for OCP UPI install"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+#  vars:
+  vars_files:
+    - "vars/vars.yaml"
+
+  vars_prompt:
+  - name: airGap
+    prompt: "Air-gapped cluster environment"
+    private: no
+    default: "{{ airGap }}"
+  - name: cosVersion
+    prompt: "RHCOS Version to install (https://mirror.openshift.com/pub/openshift-v4)"
+    private: no
+    default: "{{ cosVersion | default('') }}"
+  - name: ocpArch
+    prompt: "Architecture (x86_64, ppc64le, s390x)"
+    private: no
+    default: "{{ ocpArch | default('') }}"
+  - name: installer
+    prompt: "Path to installer"
+    private: no
+    default: "{{ installer | default('') }}"
+  - name: outdir
+    prompt: "Output directory"
+    private: no
+    default: "{{ outdir | default('') }}"
+  - name: baseDomain
+    prompt: "Base domain"
+    private: no
+    default: "{{ baseDomain | default('') }}"
+  - name: clusterName
+    prompt: "Cluster name"
+    private: no
+    default: "{{ clusterName | default('') }}"
+  - name: clusterCIDR
+    prompt: "Cluster network CIDR"
+    private: no
+    default: "{{ clusterCIDR | default('') }}"
+  - name: clusterHostPrefix
+    prompt: "Cluster host prefix"
+    private: no
+    default: "{{ clusterHostPrefix | default('') }}"
+  - name: serviceCIDR
+    prompt: "Service network CIDR"
+    private: no
+    default: "{{ serviceCIDR | default('') }}"
+  - name: publicKeyFile
+    prompt: "Public key file"
+    private: no
+    default: "{{ publicKeyFile | default('') }}"
+  - name: privateKeyFile
+    prompt: "Private key file"
+    private: no
+    default: "{{ privateKeyFile | default('') }}"
+  - name: pullSecretFile
+    prompt: "Pull secret file"
+    private: no
+    default: "{{ pullSecretFile | default('') }}"
+
+  tasks:
+
+  - set_fact:
+      run_ts: "{{ '%H%M%S' | strftime }}"
+      rhcos:
+        initramfs: "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
+        iso:       "rhcos-{{ cosVersion }}-installer.{{ ocpArch }}.iso"
+        kernel:    "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
+        raw:       "rhcos-{{ cosVersion }}-metal.{{ ocpArch }}.raw.gz"
+
+  - name: "Confirm installer"
+    include_tasks: tasks/installer.yaml
+
+  - name: "Setup output directory"
+    include_tasks: tasks/outdir.yaml
+
+  - name: "Confirm DNS"
+    include_tasks: tasks/dns.yaml
+
+  - name: "Confirm installer infrastructure"
+    include_tasks: tasks/infra.yaml
+
+  - name: "Confirm key pair"
+    include_tasks: tasks/keys.yaml
+
+  - name: "Confirm registries"
+    include_tasks: tasks/registries.yaml
+
+  - name: "Generate kernel command lines for master nodes"
+    include_tasks: tasks/kernel.yaml
+
+  - name: "Generate installer-config.yaml"
+    template:
+      src: "templates/install-config.yaml.template"
+      dest: "{{ outdir }}/install-config.yaml"
+  - debug:
+      msg: "{{ lookup('file', '{{ outdir }}/install-config.yaml') }}"
+
+  - name: "Generate dns.txt recap"
+    template:
+      src: "templates/dns.txt.template"
+      dest: "{{ outdir }}/dns.txt"
+  - debug:
+      msg: "{{ lookup('file', '{{ outdir }}/dns.txt') }}"
+
+  - name: "Generate preflight recap"
+    template:
+      src: "templates/recap.txt.template"
+      dest: "{{ outdir }}/recap.txt"
+  - debug:
+      msg: "{{ lookup('file', '{{ outdir }}/recap.txt') }}"  
+  
+  - pause:
+      prompt: "About to Genghis mode this config (Ctrl-C to (A)bort)"
+
+  - name: "Save install-config.yaml"
+    copy:
+      src: "{{ outdir }}/install-config.yaml"
+      dest: "{{ outdir }}/bak/{{ run_ts }}/"
+
+  - name: "Generate manifests"
+    include_tasks: tasks/manifests.yaml
+
+  - name: "Generate ignitions"
+    include_tasks: tasks/ignitions.yaml
+...

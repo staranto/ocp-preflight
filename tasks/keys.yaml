@@ -1,0 +1,23 @@
+---
+- name: "Confirm that public key exists"
+  stat:
+    path: "{{ publicKeyFile }}"
+  register: stat_result
+
+- assert:
+    that: stat_result.stat.exists
+
+- name: "Confirm that private key exists"
+  stat:
+    path: "{{ privateKeyFile }}"
+  register: stat_result
+
+- assert:
+    that: stat_result.stat.exists
+
+- name: "Confirm that the pair matches"
+  shell:
+    cmd: "diff <(cut -d' ' -f 2 {{ publicKeyFile }}) <(ssh-keygen -y -f {{ privateKeyFile }} | cut -d' ' -f 2)"
+  args:
+    executable: /bin/bash
+...

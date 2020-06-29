@@ -1,0 +1,10 @@
+# Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
+#   On:  {{ template_run_date }}
+#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+coreos.inst=yes
+coreos.inst.install_dev=sda 
+coreos.inst.image_url=http://{{ groups['http'][0] }}/{{ rhcos.raw }}
+coreos.inst.ignition_url=http://{{ groups['http'][0] }}/config.ign 
+ip={{ hostvars[item]['ip'] }}  

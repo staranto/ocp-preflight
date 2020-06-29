@@ -1,0 +1,75 @@
+---
+# ocp-preflight Runtime Variables
+
+# Spend some time looking through this document and
+# setting appropriate values.  If you're not confident
+# in a change, then you're probably best off leaving
+# it alone.  Especially with the CIDR stuff.
+
+
+# #########################################################
+# These variables map to entries in install-config.yaml
+
+# Make sure you have administrative control of this domain.
+# You will need to create a challenge TXT record and will
+# also need to do wildcard forwarding into the cluster.
+# *.apps.{{ clusterName }}.{{ baseDomain }}
+baseDomain: "0.taranto.dev"
+clusterCIDR: "10.128.0.0/14"
+clusterHostPrefix: "23"  
+clusterName: ocp1
+serviceCIDR: "172.30.0.0/16"
+
+# clusterName and baseDomain will be combined into the 
+# default wildcard DNS for the cluster.
+# *.apps.{{ clusterName }}.{{ baseDomain }}
+
+# The private key is not used directly by the install
+# process, but it should be specified here as a 
+# safety check to confirm that we're using a valud
+# public/private key pair.
+privateKeyFile: "~/.ssh/id_rsa"
+publicKeyFile: "~/.ssh/id_rsa.pub"
+
+# This file needs to be grabbed and saved from
+# https://cloud.redhat.com/openshift/install/pull-secret.
+# It would probably be helpful from a troubleshooting
+# perspective to run it through jq first.
+pullSecretFile: "pull-secret.txt"
+
+
+# #########################################################
+# #########################################################
+# General variables used throught the playbook.
+
+# Is this an air-gapped (restricted network) install?  This
+# should honestly be avoided if at all possible.  There will
+# be extra installation infrastructure components to be 
+# created as well as additional/modified steps.
+airGap: false
+
+# What's the path to the openshift-install executable.
+# Specify and absolute path just to avoid confusion and
+# any chance of a problem.  Find and instal the most
+# appropriate version from one of the architecture 
+# directories at https://mirror.openshift.com/pub/openshift-v4/
+installer: ~/tmp/ocp-power-test/openshift-install
+
+# What version of RHCOS will be installed?  Make sure you
+# get the exact semantic version (x.y.z) from the files
+# that you intend to deploy.
+# https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/
+cosVersion: "4.4.3"
+
+# What architecture will the cluster be deployed on?  This
+# IS NOT the architecture on which you are running the installer
+# from.  x86_64, ppc64le or s390x.  This value can be found
+# and confirmed in the .raw.gz and .iso file names.
+# https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/
+ocpArch: "x86_64"
+
+# What output directory do you want to dump all the generated
+# files into?  Do yourself a favor and leave this alone!
+# All output will be placed in a mmddyy directory in the CWD.
+outdir: "{{ '%m%d%y' | strftime }}"
+...

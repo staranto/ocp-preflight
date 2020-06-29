@@ -1,0 +1,16 @@
+---
+- name: "Generate the ignition configs"
+  shell:
+    cmd: "{{ installer }} create ignition-configs --dir {{ outdir }}"
+
+- name: "Save the generated ignition configs"
+  copy:
+    src: "{{ outdir }}/{{ item }}"
+    dest: "{{ outdir }}/bak/{{ run_ts }}/"
+  loop:
+    - auth
+    - metadata.json
+    - bootstrap.ign
+    - master.ign
+    - worker.ign
+...

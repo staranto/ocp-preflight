@@ -1,0 +1,31 @@
+---
+# Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
+#   On:  {{ template_run_date }}
+#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+apiVersion: v1
+baseDomain: {{ baseDomain }} 
+compute:
+- hyperthreading: Enabled   
+  name: worker
+  replicas: 0 
+controlPlane:
+  hyperthreading: Enabled   
+  name: master 
+  replicas: {{ groups['masters']|length }}
+metadata:
+  name: {{ clusterName }}
+networking:
+  clusterNetwork:
+  - cidr: {{ clusterCIDR }} 
+    hostPrefix: {{ clusterHostPrefix }}
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - {{ serviceCIDR }}
+platform:
+  none: {} 
+fips: false 
+pullSecret: '{{ lookup("file", pullSecretFile) }}' 
+sshKey: {{ lookup('file', publicKeyFile) }}
+...

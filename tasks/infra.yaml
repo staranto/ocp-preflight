@@ -1,0 +1,40 @@
+---
+- name: "Confirm that pull secret file exists"
+  stat:
+    path: "{{ pullSecretFile }}"
+  register: stat_result
+
+- assert:
+    fail_msg: "Pull secret file ({{ pullSecretFile }}) does not exist"
+    that: stat_result.stat.exists
+
+- name: "Confirm the HTTP server count"
+  assert:
+    that: groups['http']|length == 1
+    fail_msg: "There should be exactly one http server specified."
+
+- tempfile:
+    state: file
+  register: tempfile
+
+- name: "Confirm that HTTP server is accessible"
+  get_url:
+    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}:{{ hostvars[groups['http'][0]].port}}"
+    dest: "{{ tempfile.path }}"
+
+- name: "Confirm that all RHCOS bootstrap images are available on HTTP server"
+  get_url:
+    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}:{{ hostvars[groups['http'][0]].port}}/{{ item }}"
+    dest: "{{ tempfile.path }}"
+  loop:
+    - "{{ rhcos.initramfs }}"
+    - "{{ rhcos.iso }}"
+    - "{{ rhcos.kernel }}"
+    - "{{ rhcos.raw }}"
+  loop_control:
+    label: ""
+
+- file:
+    path: "{{ tempfile.path }}"
+    state: absent
+...

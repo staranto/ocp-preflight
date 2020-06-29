@@ -1,0 +1,6 @@
+---
+- name: "Confirm that output directory exists"
+  file:
+    path: "{{ outdir }}"
+    state: directory
+...

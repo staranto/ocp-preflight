@@ -1,0 +1,13 @@
+---
+- name: "Generate the manifests"
+  shell:
+    cmd: "{{ installer }} create manifests --dir {{ outdir }}"
+
+- name: "Save the generated manifests"
+  copy:
+    src: "{{ outdir }}/{{ item }}"
+    dest: "{{ outdir }}/bak/{{ run_ts }}/"
+  loop:
+    - manifests
+    - openshift
+...

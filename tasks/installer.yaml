@@ -1,0 +1,13 @@
+---
+- fail:
+    msg: "installer must be defined"
+  when: installer is not defined
+
+- name: "Confirm that installer is executable"
+  command:
+    cmd: "{{ installer }} version"
+  register: installer_stdout
+
+- debug: 
+    msg: "Installer is {{ installer_stdout.stdout_lines[0] }}"
+...

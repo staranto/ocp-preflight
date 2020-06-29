@@ -1,0 +1,20 @@
+# Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
+#   On:  {{ template_run_date }}
+#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+- All done.  Get medieval with the ignition files found in {{ outdir }}.
+
+- Backups of all intermediary artifacts are in {{ outdir }}/bak/{{ run_ts }}.
+
+- Make sure the kernel-* files are good.  In particular coreos.inst.install_dev.
+
+- Copy the {{ outdir }}/*.ign files to the HTTP server.
+
+### - Make sure your DNS is setup properly as shown in {{ outdir }}/bak/dns.txt.
+
+- Make sure ssh-agent is running 
+        eval "$(ssh-agent -s)"
+  and then add your private key
+        ssh-add {{ privateKeyFile }}
+
