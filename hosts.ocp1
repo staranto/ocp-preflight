@@ -1,0 +1,58 @@
+# Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
+#   On:  2020-06-30 07:32:34.861183
+#   By:  stephenta @ TARANTOSMBP.local
+#   Git: commit 4abaebdb06120e55511517187696c827f48e027d
+
+# This inventory will need to be edited after it is generated.  This 
+# is also a great opportunity to think through the environment and 
+# be sure things appears correct.
+
+
+# These are the OCP master nodes.  There should be an odd number >=3.
+# If you're using this tool to help you setup your cluster, the 
+# number should be 3!! Don't change it.  I would also highly
+# recommend that you leave the 'master-n' prefix alone.  If you have
+# tooling that works with the simple hostname, you could change it
+# to be 'ocp1-master-0'.  But keep the zero-based index in there.
+ocp1-shim-0.ocp1.0.taranto.dev ip=192.168.86.200
+ocp1-shim-1.ocp1.0.taranto.dev ip=192.168.86.201
+ocp1-shim-2.ocp1.0.taranto.dev ip=192.168.86.202
+
+# etcd hosts that should track the masters.  I *think* that the
+# simple hostname needs to stay 'etcd-n'.
+etcd-0.ocp1.0.taranto.dev ip=192.168.86.250
+etcd-1.ocp1.0.taranto.dev ip=192.168.86.250
+etcd-2.ocp1.0.taranto.dev ip=192.168.86.250
+
+worker-0.ocp1.0.taranto.dev ip=192.168.86.250
+worker-1.ocp1.0.taranto.dev ip=192.168.86.250
+
+bootstrap.0.taranto.dev ip=192.168.86.250
+lb.0.taranto.dev ip=192.168.86.250
+
+localhost port=8081
+
+# #############################################
+
+[masters]
+ocp1-shim-0.ocp1.0.taranto.dev
+ocp1-shim-1.ocp1.0.taranto.dev
+ocp1-shim-2.ocp1.0.taranto.dev
+
+[etcd]
+etcd-0.ocp1.0.taranto.dev
+etcd-1.ocp1.0.taranto.dev
+etcd-2.ocp1.0.taranto.dev
+
+[workers]
+worker-0.ocp1.0.taranto.dev
+worker-1.ocp1.0.taranto.dev
+
+[http]
+localhost
+
+[bootstrap]
+bootstrap.0.taranto.dev
+
+[loadbalancer]
+lb.0.taranto.dev

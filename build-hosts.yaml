@@ -1,0 +1,35 @@
+# ocp-preflight
+# https://github.com/mysidlabs/ocp-preflight
+
+---
+- name: "Build preflight hosts inventory file"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+#  vars:
+  vars_files:
+    - "vars/vars.yaml"
+
+  vars_prompt:
+  - name: baseDomain
+    prompt: "Base domain"
+    private: no
+    default: "{{ baseDomain | default('') }}"
+  - name: clusterName
+    prompt: "Cluster name"
+    private: no
+    default: "{{ clusterName | default('') }}"
+
+  tasks:
+
+  - set_fact:
+      run_ts: "{{ '%H%M%S' | strftime }}"
+
+  - name: "Generate hosts"
+    template:
+      src: "templates/hosts.template"
+      dest: "./hosts.{{ clusterName }}"
+  - debug:
+      msg: "{{ lookup('file', './hosts.{{ clusterName }}') }}"
+...

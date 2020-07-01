@@ -72,4 +72,12 @@ ocpArch: "x86_64"
 # files into?  Do yourself a favor and leave this alone!
 # All output will be placed in a mmddyy directory in the CWD.
 outdir: "{{ '%m%d%y' | strftime }}"
+
+portsToScan:
+  - 9000
+  - 9999
+  - 10250
+  - 10259 
+  - 30000
+  - 32767
 ...

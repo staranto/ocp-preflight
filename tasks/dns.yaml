@@ -14,6 +14,7 @@
     that: item~'.' == lookup('dig', '{{ hostvars[item].ip }}/PTR')
     fail_msg: "{{ hostvars[item].ip }} is not {{ item }}"
   loop: "{{ groups['masters'] }}"
+  # Block for dev.  Can't figure out how to reverse wildcards.
   tags: [ never, reverse ]
 
 
@@ -23,6 +24,13 @@
   register: stdout
 - debug:
     msg: "This host is using {{ stdout.stdout_lines[0] | regex_findall('\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b') }} for DNS."
+
+
+# Confirm that api. and api-int. point at the loadbalancer IP.
+
+# Confirm etcd A records.
+
+# Confirm etcd SRV records.
 
 
 - name: "Confirm the administrative control of DNS domain."

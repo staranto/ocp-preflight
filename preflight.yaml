@@ -113,6 +113,10 @@
   - name: "Confirm DNS"
     include_tasks: tasks/dns.yaml
 
+  - name: "Confirm network"
+    include_tasks: tasks/network.yaml
+    # tags: [ never ]
+
   - name: "Confirm installer infrastructure"
     include_tasks: tasks/infra.yaml
 

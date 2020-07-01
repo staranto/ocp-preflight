@@ -1,11 +1,14 @@
-# Highly recommended that you start this at zero with the 
-# format of xxx-master-0, xxx-master-1, etc.
-master-0.0.taranto.dev ip=192.168.86.250
-master-1.0.taranto.dev ip=192.168.86.250
-master-2.0.taranto.dev ip=192.168.86.250
+master-0.ocp1.0.taranto.dev ip=192.168.86.250
+master-1.ocp1.0.taranto.dev ip=192.168.86.250
+master-2.ocp1.0.taranto.dev ip=192.168.86.250
 
-worker-0.0.taranto.dev ip=192.168.86.250
-worker-1.0.taranto.dev ip=192.168.86.250
+# etcd hosts should "track" masters
+etcd-0.ocp1.0.taranto.dev ip=192.168.86.250
+etcd-1.ocp1.0.taranto.dev ip=192.168.86.250
+etcd-2.ocp1.0.taranto.dev ip=192.168.86.250
+
+worker-0.ocp1.0.taranto.dev ip=192.168.86.250
+worker-1.ocp1.0.taranto.dev ip=192.168.86.250
 
 bootstrap.0.taranto.dev ip=192.168.86.250
 lb.0.taranto.dev ip=192.168.86.250
@@ -16,6 +19,11 @@ localhost port=8081
 master-0.0.taranto.dev
 master-1.0.taranto.dev
 master-2.0.taranto.dev
+
+[etcd]
+etcd-0.ocp1.0.taranto.dev
+etcd-1.ocp1.0.taranto.dev
+etcd-2.ocp1.0.taranto.dev
 
 [workers]
 worker-0.0.taranto.dev

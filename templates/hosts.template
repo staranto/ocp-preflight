@@ -1,0 +1,59 @@
+# Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
+#   On:  {{ template_run_date }}
+#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+# This inventory will need to be edited after it is generated.  This 
+# is also a great opportunity to think through the environment and 
+# be sure things appears correct.
+
+
+# These are the OCP master nodes.  There should be an odd number >=3.
+# If you're using this tool to help you setup your cluster, the 
+# number should be 3!! Don't change it.  I would also highly
+# recommend that you leave the 'master-n' prefix along.  If you have
+# tooling that works with the simple hostname, you could change it
+# to be '{{ clusterName }}-master-0'.  But keep the zero-based
+# index in there.
+master-0.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+master-1.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+master-2.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+
+# etcd hosts that should track the masters.  I *think* that the
+# simple hostname needs to stay 'etcd-n'.
+etcd-0.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+etcd-1.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+etcd-2.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+
+worker-0.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+worker-1.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+
+bootstrap.{{ baseDomain }} ip=a.b.c.d
+lb.{{ baseDomain }} ip=a.b.c.d
+
+localhost port=8081
+
+# #############################################
+
+[masters]
+master-0.{{ clusterName }}.{{ baseDomain }}
+master-1.{{ clusterName }}.{{ baseDomain }}
+master-2.{{ clusterName }}.{{ baseDomain }}
+
+[etcd]
+etcd-0.{{ clusterName }}.{{ baseDomain }}
+etcd-1.{{ clusterName }}.{{ baseDomain }}
+etcd-2.{{ clusterName }}.{{ baseDomain }}
+
+[workers]
+worker-0.{{ clusterName }}.{{ baseDomain }}
+worker-1.{{ clusterName }}.{{ baseDomain }}
+
+[http]
+localhost
+
+[bootstrap]
+bootstrap.{{ baseDomain }}
+
+[loadbalancer]
+lb.{{ baseDomain }}
