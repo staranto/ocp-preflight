@@ -7,4 +7,6 @@ coreos.inst=yes
 coreos.inst.install_dev=sda 
 coreos.inst.image_url=http://{{ groups['http'][0] }}/{{ rhcos.raw }}
 coreos.inst.ignition_url=http://{{ groups['http'][0] }}/config.ign 
-ip={{ hostvars[item]['ip'] }}  
+ip={{ hostvars[item]['ip'] }}::<< gateway >>:<< netmask >>:<< node hostname >>:<< dns >>
+
+# ip=10.10.10.2::10.10.10.254:255.255.255.0:core0.example.com:enp1s0:none nameserver=4.4.4.41 sets:

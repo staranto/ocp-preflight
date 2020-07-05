@@ -97,12 +97,15 @@
   tasks:
 
   - set_fact:
-      run_ts: "{{ '%H%M%S' | strftime }}"
+      outdir: "{{ outdir }}/{{ '%m%d%y/%H%M%S' | strftime }}"
       rhcos:
         initramfs: "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
-        iso:       "rhcos-{{ cosVersion }}-installer.{{ ocpArch }}.iso"
+        iso:       "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer.{{ ocpArch }}.iso"
         kernel:    "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
-        raw:       "rhcos-{{ cosVersion }}-metal.{{ ocpArch }}.raw.gz"
+        raw:       "rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
+
+  - debug:
+      msg: "All output will be in {{ outdir }}"
 
   - name: "Confirm installer"
     include_tasks: tasks/installer.yaml
@@ -156,11 +159,14 @@
   - name: "Save install-config.yaml"
     copy:
       src: "{{ outdir }}/install-config.yaml"
-      dest: "{{ outdir }}/bak/{{ run_ts }}/"
+      dest: "{{ outdir }}/bak/"
 
   - name: "Generate manifests"
     include_tasks: tasks/manifests.yaml
 
   - name: "Generate ignitions"
     include_tasks: tasks/ignitions.yaml
+
+  - name: "Generate iPXEs"
+    include_tasks: tasks/ipxes.yaml
 ...

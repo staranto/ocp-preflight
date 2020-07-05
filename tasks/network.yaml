@@ -4,10 +4,7 @@
     host: "{{ item[0] }}"
     port: "{{ item[1] }}"
     timeout: 1
-  #shell:
-  #  cmd: nc -zv {{ item[0] }} {{ item[1] }}
-  #loop: "{{ query('inventory_hostnames', 'masters') }} | product(portsToScan) | list"
   with_nested:
     - "{{ query('inventory_hostnames', 'masters') }}"
-    - "{{ portsToScan }}"
+    - "{{ hostvars[groups['masters'][0]].portsToScan }}"
 ...

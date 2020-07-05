@@ -2,6 +2,6 @@
   - name: "Generate the master kernel command lines"
     template:
       src: "templates/kernel.template"
-      dest: "{{ outdir }}/kernel-{{ item }}"
+      dest: "{{ outdir }}/kernel.{{ item }}"
     loop: "{{ groups['masters'] }}"
 ...

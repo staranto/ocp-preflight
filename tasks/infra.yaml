@@ -19,12 +19,12 @@
 
 - name: "Confirm that HTTP server is accessible"
   get_url:
-    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}:{{ hostvars[groups['http'][0]].port}}"
+    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}"
     dest: "{{ tempfile.path }}"
 
 - name: "Confirm that all RHCOS bootstrap images are available on HTTP server"
   get_url:
-    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}:{{ hostvars[groups['http'][0]].port}}/{{ item }}"
+    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}/{{ item }}"
     dest: "{{ tempfile.path }}"
   loop:
     - "{{ rhcos.initramfs }}"

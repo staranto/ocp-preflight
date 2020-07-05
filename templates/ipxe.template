@@ -1,0 +1,7 @@
+#!ipxe
+
+kernel http://{{ hostvars[groups['http'][0]].ip }}/kernel rd.neednet=1 initrd=http://{{ hostvars[groups['http'][0]].ip }}/initramfs console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=sda coreos.inst.image_url=http://{{ hostvars[groups['http'][0]].ip }}/raw coreos.inst.ignition_url=http://{{ hostvars[groups['http'][0]].ip }}/sentinel.ign ip={{ hostvars[item].ip }}::192.168.86.1:255.255.255.0:{{ item }}:ens18:none nameserver=192.168.86.41
+
+initrd http://{{ hostvars[groups['http'][0]].ip }}/initramfs 
+
+boot

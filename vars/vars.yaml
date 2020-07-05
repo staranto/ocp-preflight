@@ -53,7 +53,7 @@ airGap: false
 # any chance of a problem.  Find and instal the most
 # appropriate version from one of the architecture 
 # directories at https://mirror.openshift.com/pub/openshift-v4/
-installer: ~/tmp/ocp-power-test/openshift-install
+installer: ./bin/openshift-install
 
 # What version of RHCOS will be installed?  Make sure you
 # get the exact semantic version (x.y.z) from the files
@@ -71,13 +71,5 @@ ocpArch: "x86_64"
 # What output directory do you want to dump all the generated
 # files into?  Do yourself a favor and leave this alone!
 # All output will be placed in a mmddyy directory in the CWD.
-outdir: "{{ '%m%d%y' | strftime }}"
-
-portsToScan:
-  - 9000
-  - 9999
-  - 10250
-  - 10259 
-  - 30000
-  - 32767
+outdir: "."
 ...

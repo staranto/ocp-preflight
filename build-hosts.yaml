@@ -23,9 +23,6 @@
 
   tasks:
 
-  - set_fact:
-      run_ts: "{{ '%H%M%S' | strftime }}"
-
   - name: "Generate hosts"
     template:
       src: "templates/hosts.template"

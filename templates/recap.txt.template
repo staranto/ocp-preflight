@@ -5,7 +5,7 @@
 
 - All done.  Get medieval with the ignition files found in {{ outdir }}.
 
-- Backups of all intermediary artifacts are in {{ outdir }}/bak/{{ run_ts }}.
+- Backups of all intermediary artifacts are in {{ outdir }}/bak.
 
 - Make sure the kernel-* files are good.  In particular coreos.inst.install_dev.
 

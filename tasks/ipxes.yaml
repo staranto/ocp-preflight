@@ -1,0 +1,7 @@
+---
+  - name: "Generate the master iPXE scripts"
+    template:
+      src: "templates/ipxe.template"
+      dest: "{{ outdir }}/ipxe.{{ item }}"
+    loop: "{{ groups['masters'] }}"
+...
