@@ -1,0 +1,6 @@
+.DS_Store
+/0*
+*.txt
+pull*.*
+test/
+bin/

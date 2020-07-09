@@ -6,7 +6,7 @@
 - name: "Save the generated ignition configs"
   copy:
     src: "{{ outdir }}/{{ item }}"
-    dest: "{{ outdir }}/bak/"
+    dest: "{{ outdir }}/bak/ignitions"
   loop:
     - auth
     - metadata.json

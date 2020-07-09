@@ -3,4 +3,7 @@
   file:
     path: "{{ outdir }}"
     state: directory
+
+- debug:
+    msg: "All output will be in {{ outdir }}"
 ...

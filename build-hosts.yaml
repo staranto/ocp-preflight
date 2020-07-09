@@ -7,9 +7,8 @@
   connection: local
   gather_facts: false
 
-#  vars:
-  vars_files:
-    - "vars/vars.yaml"
+  roles:
+    - common
 
   vars_prompt:
   - name: baseDomain
@@ -22,6 +21,10 @@
     default: "{{ clusterName | default('') }}"
 
   tasks:
+
+  - set_fact:
+      baseDomain: "{{ baseDomain }}"
+      clusterName: "{{ lookup('vars', 'clusterName') }}"
 
   - name: "Generate hosts"
     template:

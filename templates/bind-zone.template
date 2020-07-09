@@ -1,0 +1,58 @@
+; Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
+;   On:  {{ template_run_date }}
+;   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+;   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+$TTL	1D
+@	IN	SOA	 {{ hostvars[groups['dns'][0]].inventory_hostname }}. root.{{ baseDomain }}. (
+			     22		; Serial
+			     1D		; Refresh
+			     1H		; Retry
+			     1W		; Expire
+			     3H )	; Negative Cache TTL
+;
+@	IN	NS	{{ hostvars[groups['dns'][0]].inventory_hostname }}.
+
+; This challenge record is used to confirm that you have administrative control
+; of the {{ baseDomain }} domain.  That control is not immediately used by the 
+; OCP install process, but you'll need it soon enough when you start dealing 
+; with certs in your cluster.
+_ocp-preflight-challenge.{{ baseDomain }}. IN TXT 	"{{ clusterName }}"
+
+; Each master needs to have an A record for its "OCP identity" and a matching
+; A record for its on-board etcd service.  There also needs to be a SRV that
+; references that etcd hostname.
+{% for host in groups['masters'] %}
+{{ '{:36}'.format(hostvars[host].inventory_hostname_short~"."~clusterName) }} IN A {{ hostvars[host].ip }}
+{% endfor %}
+{% for host in groups['masters'] %}
+{{ '{:36}'.format("etcd-"~(loop.index-1)~"."~clusterName) }} IN A {{ hostvars[host].ip }}
+{% endfor %}
+{% for host in groups['masters'] %}
+{{ '{:30}'.format("_etcd-server-ssl._tcp."~clusterName) }} 86400 IN SRV 0 10 2380 etcd-{{ loop.index-1 }}.{{ clusterName }}.{{ baseDomain }}.
+{% endfor %}
+
+; Misc A records for all the components orbiting around the OCP cluster.
+; bootstrap and http are temporary and can be removed post install.
+; The wildcard entry is critical - the OCP cluster will not function and 
+; may not even spin up properly if this entry is incorrect.  Test it with
+; 'dig doesnt-exist.apps.{{ clusterName }}.{{ baseDomain }}'.  You should
+; get the ip of the loadbalancer ({{ hostvars[groups['loadbalancer'][0]].ip }}).
+{{ '{:36}'.format(hostvars[groups['bootstrap'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['bootstrap'][0]].ip }}
+{{ '{:36}'.format(hostvars[groups['dns'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['dns'][0]].ip }}
+{{ '{:36}'.format(hostvars[groups['http'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['http'][0]].ip }}
+{{ '{:36}'.format(hostvars[groups['loadbalancer'][0]].inventory_hostname_short~"."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
+{{ '{:36}'.format("api."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
+{{ '{:36}'.format("api-int."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
+{{ '{:36}'.format("*.apps."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
+
+; Reverse lookups.  I don't think these are technically needed by the
+; the cluster, but they are needed by ocp-preflight as DNS resolution
+; in both directions is verified.  This is a good double-check.
+{% for host in groups['masters'] %}
+{{ '{:4}'.format(hostvars[host].ip.split('.')[3]) }} IN PTR {{ hostvars[host].inventory_hostname_short }}.{{ clusterName }}
+{% endfor %}
+{{ '{:4}'.format(hostvars[groups['bootstrap'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['bootstrap'][0]].inventory_hostname_short }}.
+{{ '{:4}'.format(hostvars[groups['dns'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['dns'][0]].inventory_hostname_short }}.
+{{ '{:4}'.format(hostvars[groups['http'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['http'][0]].inventory_hostname_short }}.
+{{ '{:4}'.format(hostvars[groups['loadbalancer'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['loadbalancer'][0]].inventory_hostname_short }}.{{ clusterName }}.

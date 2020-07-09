@@ -1,4 +1,10 @@
 ---
+  - name: "Generate the bootsrap iPXE scripts"
+    template:
+      src: "templates/ipxe.template"
+      dest: "{{ outdir }}/ipxe.{{ item }}"
+    loop: "{{ groups['bootstrap'] }}"
+
   - name: "Generate the master iPXE scripts"
     template:
       src: "templates/ipxe.template"

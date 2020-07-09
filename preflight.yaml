@@ -36,10 +36,9 @@
   connection: local
   gather_facts: false
 
-#  vars:
-  vars_files:
-    - "vars/vars.yaml"
-
+  roles:
+    - common
+    
   vars_prompt:
   - name: airGap
     prompt: "Air-gapped cluster environment"
@@ -104,21 +103,26 @@
         kernel:    "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
         raw:       "rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
 
-  - debug:
-      msg: "All output will be in {{ outdir }}"
+  - name: "Setup output directory"
+    include_tasks: tasks/outdir.yaml
+
+  - name: "Generate DNS zone file"
+    template:
+      src: "templates/bind-zone.template"
+      dest: "{{ outdir }}/{{ baseDomain }}.zone"
+
+  - pause:
+      prompt: "Review this zone file ({{ outdir }}/{{ baseDomain }}.zone) and make sure your DNS matches!!"
 
   - name: "Confirm installer"
     include_tasks: tasks/installer.yaml
-
-  - name: "Setup output directory"
-    include_tasks: tasks/outdir.yaml
 
   - name: "Confirm DNS"
     include_tasks: tasks/dns.yaml
 
   - name: "Confirm network"
     include_tasks: tasks/network.yaml
-    # tags: [ never ]
+    tags: [ never ]
 
   - name: "Confirm installer infrastructure"
     include_tasks: tasks/infra.yaml
@@ -138,13 +142,6 @@
       dest: "{{ outdir }}/install-config.yaml"
   - debug:
       msg: "{{ lookup('file', '{{ outdir }}/install-config.yaml') }}"
-
-  - name: "Generate dns.txt recap"
-    template:
-      src: "templates/dns.txt.template"
-      dest: "{{ outdir }}/dns.txt"
-  - debug:
-      msg: "{{ lookup('file', '{{ outdir }}/dns.txt') }}"
 
   - name: "Generate preflight recap"
     template:

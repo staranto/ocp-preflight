@@ -1,14 +1,14 @@
 # Generated with ocp-preflight (https://github.com/mysidlabs/ocp-preflight)
-#   On:  {{ template_run_date }}
-#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
-#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+#   On:  2020-07-09 05:33:29.208556
+#   By:  stephenta @ TARANTOSMBP.local
+#   Git: commit d31c66fda49fdbbacfc7ead79b379b774c856fcc
 
 # ####################################################################
 # This inventory will need to be edited after it is generated.  This 
 # is also a great opportunity to think through the environment and 
 # be sure things appears correct.
 
-# Entries must sync up with the DNS zone for {{ baseDomain }}.
+# Entries must sync up with the DNS zone for 0.taranto.dev.
 # By extra attentive and doublecheck everything.  Time well spent!
 # ####################################################################
 
@@ -17,60 +17,60 @@
 # number should be 3!! Don't change it.  I would also highly
 # recommend that you leave the 'master-n' prefix along.  If you have
 # tooling that works with the simple hostname, you could change it
-# to be '{{ clusterName }}-master-0'.  But keep the zero-based
+# to be 'zk-master-0'.  But keep the zero-based
 # index in there.
-master-0.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
-master-1.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
-master-2.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+master-0.zk.0.taranto.dev ip=192.168.86.220
+master-1.zk.0.taranto.dev ip=192.168.86.221
+master-2.zk.0.taranto.dev ip=192.168.86.222
 
 # etcd hosts that should track the masters.  I *think* that the
 # simple hostname needs to stay 'etcd-n'.
-etcd-0.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
-etcd-1.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
-etcd-2.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+etcd-0.zk.0.taranto.dev ip=192.168.86.220
+etcd-1.zk.0.taranto.dev ip=192.168.86.221
+etcd-2.zk.0.taranto.dev ip=192.168.86.222
 
 # Optional worker nodes if you want to provision them when
 # you initially build the cluster.
-worker-0.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
-worker-1.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+worker-0.zk.0.taranto.dev ip=192.168.86.223
+worker-1.zk.0.taranto.dev ip=192.168.86.224
 
 # bootstrap is just temporary.  DHCP can be used, but let's not
 # mess around.  Give it a static IP like everything else.
-bootstrap.{{ baseDomain }} ip=a.b.c.d
+bootstrap.0.taranto.dev ip=192.168.86.229
 
 # dns server
-nas-1.{{ baseDomain }} ip=a.b.c.d
+nas-1.0.taranto.dev ip=192.168.86.241
 
 # haproxy used to proxy all traffic into the cluster.
-lb.{{ clusterName }}.{{ baseDomain }} ip=a.b.c.d
+lb.zk.0.taranto.dev ip=192.168.86.228
 
 # http server used to server up ignition and boot files.
-www.{{ baseDomain }} ip=a.b.c.d
+www.0.taranto.dev ip=192.168.86.242
 
 # #############################################
 
 [masters]
-master-0.{{ clusterName }}.{{ baseDomain }}
-master-1.{{ clusterName }}.{{ baseDomain }}
-master-2.{{ clusterName }}.{{ baseDomain }}
+master-0.zk.0.taranto.dev
+master-1.zk.0.taranto.dev
+master-2.zk.0.taranto.dev
 
 [etcd]
-etcd-0.{{ clusterName }}.{{ baseDomain }}
-etcd-1.{{ clusterName }}.{{ baseDomain }}
-etcd-2.{{ clusterName }}.{{ baseDomain }}
+etcd-0.zk.0.taranto.dev
+etcd-1.zk.0.taranto.dev
+etcd-2.zk.0.taranto.dev
 
 [workers]
-worker-0.{{ clusterName }}.{{ baseDomain }}
-worker-1.{{ clusterName }}.{{ baseDomain }}
+worker-0.zk.0.taranto.dev
+worker-1.zk.0.taranto.dev
 
 [bootstrap]
-bootstrap.{{ baseDomain }}
+bootstrap.0.taranto.dev
 
 [dns]
-nas-1.{{ baseDomain }}
+nas-1.0.taranto.dev
 
 [http]
-www.{{ baseDomain }}
+www.0.taranto.dev
 
 [loadbalancer]
-lb.{{ clusterName }}.{{ baseDomain }}
+lb.zk.0.taranto.dev
