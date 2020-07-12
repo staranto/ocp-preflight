@@ -44,22 +44,6 @@
     prompt: "Air-gapped cluster environment"
     private: no
     default: "{{ airGap }}"
-  - name: cosVersion
-    prompt: "RHCOS Version to install (https://mirror.openshift.com/pub/openshift-v4)"
-    private: no
-    default: "{{ cosVersion | default('') }}"
-  - name: ocpArch
-    prompt: "Architecture (x86_64, ppc64le, s390x)"
-    private: no
-    default: "{{ ocpArch | default('') }}"
-  - name: installer
-    prompt: "Path to installer"
-    private: no
-    default: "{{ installer | default('') }}"
-  - name: outdir
-    prompt: "Output directory"
-    private: no
-    default: "{{ outdir | default('') }}"
   - name: baseDomain
     prompt: "Base domain"
     private: no
@@ -68,6 +52,22 @@
     prompt: "Cluster name"
     private: no
     default: "{{ clusterName | default('') }}"
+  - name: outdir
+    prompt: "Output directory"
+    private: no
+    default: "{{ outdir | default('') }}"
+  - name: installer
+    prompt: "Path to installer"
+    private: no
+    default: "{{ installer | default('') }}"
+  - name: cosVersion
+    prompt: "RHCOS Version to install (https://mirror.openshift.com/pub/openshift-v4)"
+    private: no
+    default: "{{ cosVersion | default('') }}"
+  - name: ocpArch
+    prompt: "Architecture (x86_64, ppc64le, s390x)"
+    private: no
+    default: "{{ ocpArch | default('') }}"
   - name: clusterCIDR
     prompt: "Cluster network CIDR"
     private: no
@@ -98,10 +98,10 @@
   - set_fact:
       outdir: "{{ outdir }}/{{ '%m%d%y/%H%M%S' | strftime }}"
       rhcos:
-        initramfs: "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
-        iso:       "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer.{{ ocpArch }}.iso"
-        kernel:    "rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
-        raw:       "rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
+        initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
+        iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer.{{ ocpArch }}.iso"
+        kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
+        raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
 
   - name: "Setup output directory"
     include_tasks: tasks/outdir.yaml
@@ -122,7 +122,7 @@
 
   - name: "Confirm network"
     include_tasks: tasks/network.yaml
-    tags: [ never ]
+    tags: [ never, network ]
 
   - name: "Confirm installer infrastructure"
     include_tasks: tasks/infra.yaml
@@ -133,9 +133,6 @@
   - name: "Confirm registries"
     include_tasks: tasks/registries.yaml
 
-  - name: "Generate kernel command lines for master nodes"
-    include_tasks: tasks/kernel.yaml
-
   - name: "Generate installer-config.yaml"
     template:
       src: "templates/install-config.yaml.template"
@@ -143,13 +140,11 @@
   - debug:
       msg: "{{ lookup('file', '{{ outdir }}/install-config.yaml') }}"
 
-  - name: "Generate preflight recap"
+  - name: "Generate HAProxy config file"
     template:
-      src: "templates/recap.txt.template"
-      dest: "{{ outdir }}/recap.txt"
-  - debug:
-      msg: "{{ lookup('file', '{{ outdir }}/recap.txt') }}"  
-  
+      src: "templates/haproxy.cfg.template"
+      dest: "{{ outdir }}/haproxy.cfg"
+
   - pause:
       prompt: "About to Genghis mode this config (Ctrl-C to (A)bort)"
 

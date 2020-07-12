@@ -1,0 +1,52 @@
+---
+# https://github.com/flatcar-linux/container-linux-config-transpiler/blob/flatcar-master/doc/examples.md
+
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - "{{ lookup('file', publicKeyFile) }}"
+
+storage:
+  files:
+    - path: /sentinel/listener.sh
+      filesystem: root
+      mode: 0755
+      contents:
+        local: listener.sh
+    - path: /etc/hostname
+      filesystem: root
+      mode: 0644
+      overwrite: yes
+      contents:
+        local: "hostname.template"
+
+# https://wiki.archlinux.org/index.php/Systemd-networkd#systemd-resolve_not_searching_the_local_domain
+networkd:
+  units:
+    - name: static.network
+      contents: |
+        [Match]
+        Name=eth0
+
+        [Network]
+        DNS={{ hostvars[groups['dns'][0]].ip }}
+        Gateway=192.168.86.1
+        Address={{ hostvars[item].ip }}
+        Domains={{ clusterName }}.{{ baseDomain }}
+        LinkLocalAddressing=no
+        IPv6AcceptRA=no
+
+systemd:
+  units:
+    - name: listener.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Sentinel Listener Service
+        [Service]
+        Type=simple
+        ExecStart=/sentinel/listener.sh
+        [Install]
+        WantedBy=multi-user.target
+...

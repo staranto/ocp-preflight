@@ -1,0 +1,54 @@
+{
+  "ignition": {
+    "version": "2.2.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCw94I6lq5K/dMfZqTj9deiEEH+ctpqfjmR/8Ezi9486WdzVGXbHeM5G2XEYIQpG5yoR5zMDY+I4XvCWSujF+S+uLzlTiy2wvZ8ao8lYk5TnsrGe8NMncX9wNwVDcPA4Tpm8vn8Ck25huzgqmSysqT+wjOHZqcvuetX9NgWuqQgpqorK+zXkOviQtRYvzYpsCwkqBWHghkFFrIO9amQ2mkOQI8Fi6uKAeY8Wpcp3rTejj591+rS1PaQ9AzqHtwsOt0dpcvDci9SIG3RS0GHMD3B5HIF6Ux02aqZQP47vmddd7ctUB+8JTYtJNsj+ZEeomG/j0Zwh9K1yy9Ee21NGsVv46VmUSQ0rlRH7Xdt6XW9mGMW/MccsxI0KaGUW0nWXZdSRfL5oJucYyUgdbHIJHO0Kfex0jQ/zOlc7VUGSPq5W9AGoFpP6C7nS7hgQFo5V3FYoA7O6cr5c7LVv39bbivDhMZ2l/YQh+ykekF9ZMjvvDQ0BQv5u3Zm9og7hPFnkX8= stephenta@tarantosmbp.lan"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/sentinel/listener.sh",
+        "contents": {
+          "source": "data:,%23!%20%2Fbin%2Fsh%0Aplist%3D%222379%202380%206443%209000%209999%2010250%2010259%2030000%2032767%22%0Afor%20p%20in%20%24plist%3B%20do%0A%20%20ncat%20-lk%20%24%7Bp%7D%20%26%0Adone%0A%0Atail%20-f%20%2Fdev%2Fnull%0A%0A",
+          "verification": {}
+        },
+        "mode": 493
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/hostname",
+        "contents": {
+          "source": "data:,winner"
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/systemd/network/static.network",
+	"contents": {
+          "source": "data:;base64,W01hdGNoXQpOYW1lPWV0aDAKCltOZXR3b3JrXQpBZGRyZXNzPTE5Mi4xNjguODYuMjI5CkROUz0xOTIuMTY4Ljg2LjQxCkRvbWFpbnM9b2Nwei4wLnRhcmFudG8uZGV2CkdhdGV3YXk9MTkyLjE2OC44Ni4xCklQdjZBY2NlcHRSQT1ubwpMaW5rTG9jYWxBZGRyZXNzaW5nPW5vCg=="
+        },
+        "mode": 420
+      }
+    ]
+  },
+
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=Sentinel Listener Service\n[Service]\nType=simple\nExecStart=/sentinel/listener.sh\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "listener.service"
+      }
+    ]
+  }
+}

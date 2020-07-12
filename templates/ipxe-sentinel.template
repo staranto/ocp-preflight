@@ -1,0 +1,14 @@
+#!ipxe
+
+# Generated with ocp-preflight (https://github.com/staranto/ocp-preflight)
+#   On:  {{ template_run_date }}
+#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+set www http://{{ hostvars[groups['http'][0]].ip }}
+
+kernel ${www}/fc/vmlinuz initrd=${www}/fc/cpio flatcar.first_boot=1 ignition.config.url=${www}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign
+
+initrd ${www}/fc/cpio
+
+boot

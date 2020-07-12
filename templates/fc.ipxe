@@ -1,0 +1,9 @@
+#!ipxe
+
+set www http://192.168.86.242
+
+kernel ${www}/fc/vmlinuz initrd=${www}/fc/cpio flatcar.first_boot=1 ignition.config.url=${www}/fc.ign
+
+initrd ${www}/fc/cpio
+
+boot

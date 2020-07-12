@@ -6,7 +6,6 @@
 # in a change, then you're probably best off leaving
 # it alone.  Especially with the CIDR stuff.
 
-
 # #########################################################
 # These variables map to entries in install-config.yaml
 
@@ -36,7 +35,6 @@ publicKeyFile: "~/.ssh/id_rsa.pub"
 # It would probably be helpful from a troubleshooting
 # perspective to run it through jq first.
 pullSecretFile: "pull-secret.txt"
-
 
 # #########################################################
 # #########################################################

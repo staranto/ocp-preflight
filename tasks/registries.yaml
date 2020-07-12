@@ -1,6 +1,7 @@
 ---
 # This is weak sauce.  Should probably really look
 # at actually pulling an image.  What about 5000?
+# Also gcr.io
 - name: "Make sure public registries are reachable"
   shell:
     cmd: nc -z -w 1 {{ item.key }} 80 && nc -z -w 1 {{ item.key }} 443

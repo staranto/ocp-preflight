@@ -1,5 +1,5 @@
 # ocp-preflight
-# https://github.com/mysidlabs/ocp-preflight
+# https://github.com/staranto/ocp-preflight
 
 ---
 - name: "Build preflight hosts inventory file"

@@ -1,0 +1,51 @@
+# Generated with ocp-preflight (https://github.com/staranto/ocp-preflight)
+#   On:  {{ template_run_date }}
+#   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
+#   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
+
+# #####################################################################
+# This is a fragment of a larger configuration.  Add the following 
+# to an existing, or the default, haproxy.cfg.
+# #####################################################################
+
+frontend api
+    bind {{ hostvars[groups['loadbalancer'][0]].ip }}:6443
+    default_backend controlplaneapi
+
+frontend machineconfig
+    bind {{ hostvars[groups['loadbalancer'][0]].ip }}:22623
+    default_backend controlplanemc
+
+frontend tlsrouter
+    bind {{ hostvars[groups['loadbalancer'][0]].ip }}:443
+    default_backend secure
+
+frontend insecurerouter
+    bind {{ hostvars[groups['loadbalancer'][0]].ip }}:80
+    default_backend insecure
+
+backend controlplaneapi
+    balance source
+    server bootstrap {{ hostvars[groups['bootstrap'][0]].ip }}:6443 check
+{% for host in groups['masters'] %}
+    server {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].ip }}:6443 check 
+{% endfor %}
+
+backend controlplanemc
+    balance source
+    server bootstrap {{ hostvars[groups['bootstrap'][0]].ip }}:22623 check
+{% for host in groups['masters'] %}
+    server {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].ip }}:22623 check 
+{% endfor %}
+
+backend secure
+    balance source
+{% for host in groups['masters'] %}
+    server {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].ip }}:443 check 
+{% endfor %}
+
+backend insecure
+    balance source
+{% for host in groups['masters'] %}
+    server {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].ip }}:443 check 
+{% endfor %}

@@ -1,0 +1,60 @@
+{
+  "ignition": {
+    "config": {},
+    "security": {
+      "tls": {}
+    },
+    "timeouts": {},
+    "version": "2.2.0"
+  },
+  "networkd": {
+    "units": [
+      {
+        "contents": "[Match]\nName=eth0\n\n[Network]\nDNS={{ hostvars[groups['dns'][0]].ip }}\nGateway=192.168.86.1\nAddress={{ hostvars[item].ip }}\nDomains={{ clusterName }}.{{ baseDomain }}\nLinkLocalAddressing=no\nIPv6AcceptRA=no\n",
+        "name": "static.network"
+      }
+    ]
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "{{ lookup('file', publicKeyFile) }}"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/sentinel/listener.sh",
+        "contents": {
+          "source": "data:,%23!%20%2Fbin%2Fsh%0Aplist%3D%222379%202380%206443%209000%209999%2010250%2010259%2030000%2032767%22%0Afor%20p%20in%20%24plist%3B%20do%0A%20%20ncat%20-lk%20%24%7Bp%7D%20%26%0Adone%0A%0Atail%20-f%20%2Fdev%2Fnull%0A%0A",
+          "verification": {}
+        },
+        "mode": 493
+      },
+      {
+        "filesystem": "root",
+        "overwrite": true,
+        "path": "/etc/hostname",
+        "contents": {
+          "source": "data:,%7B%7B%20hostvars%5Bitem%5D.inventory_hostname_short%20%7D%7D",
+          "verification": {}
+        },
+        "mode": 420
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=Sentinel Listener Service\n[Service]\nType=simple\nExecStart=/sentinel/listener.sh\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "listener.service"
+      }
+    ]
+  }
+}

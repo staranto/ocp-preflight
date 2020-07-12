@@ -1,6 +1,7 @@
 .DS_Store
 /0*
 *.txt
+hosts.*
 pull*.*
 test/
 bin/
