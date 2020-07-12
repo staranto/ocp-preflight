@@ -96,39 +96,32 @@
   tasks:
 
   - set_fact:
-      outdir: "{{ outdir }}/{{ '%m%d%y/%H%M%S' | strftime }}"
+      outdir: "{{ outdir }}/{{ clusterName }}"
+      # outdir: "{{ outdir }}/{{ '%m%d%y/%H%M%S' | strftime }}"
       rhcos:
         initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
         iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer.{{ ocpArch }}.iso"
         kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
         raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
 
-  - name: "Setup output directory"
-    include_tasks: tasks/outdir.yaml
+  - include_role:
+      name: core
+      apply:
+        tags:
+          - core
+    tags: [ never, core ]
 
-  - name: "Generate DNS zone file"
-    template:
-      src: "templates/bind-zone.template"
-      dest: "{{ outdir }}/{{ baseDomain }}.zone"
 
-  - pause:
-      prompt: "Review this zone file ({{ outdir }}/{{ baseDomain }}.zone) and make sure your DNS matches!!"
-
-  - name: "Confirm installer"
-    include_tasks: tasks/installer.yaml
-
-  - name: "Confirm DNS"
-    include_tasks: tasks/dns.yaml
+  - include_role:
+      name: sentinel
+      apply:
+        tags:
+          - sentinel
+    tags: [ never, sentinel ]
 
   - name: "Confirm network"
     include_tasks: tasks/network.yaml
     tags: [ never, network ]
-
-  - name: "Confirm installer infrastructure"
-    include_tasks: tasks/infra.yaml
-
-  - name: "Confirm key pair"
-    include_tasks: tasks/keys.yaml
 
   - name: "Confirm registries"
     include_tasks: tasks/registries.yaml

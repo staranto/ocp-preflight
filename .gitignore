@@ -5,3 +5,4 @@ hosts.*
 pull*.*
 test/
 bin/
+out/

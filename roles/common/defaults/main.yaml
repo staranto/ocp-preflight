@@ -69,5 +69,5 @@ ocpArch: "x86_64"
 # What output directory do you want to dump all the generated
 # files into?  Do yourself a favor and leave this alone!
 # All output will be placed in a mmddyy directory in the CWD.
-outdir: "."
+outdir: "./out/{{ clusterName }}"
 ...
