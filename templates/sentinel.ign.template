@@ -16,18 +16,27 @@
     "files": [
       {
         "filesystem": "root",
-        "path": "/sentinel/listener.sh",
+        "path": "/sentinel/sentinel.sh",
         "contents": {
-          "source": "data:,%23!%20%2Fbin%2Fsh%0Aplist%3D%222379%202380%206443%209000%209999%2010250%2010259%2030000%2032767%22%0Afor%20p%20in%20%24plist%3B%20do%0A%20%20ncat%20-lk%20%24%7Bp%7D%20%26%0Adone%0A%0Atail%20-f%20%2Fdev%2Fnull%0A%0A",
+          "source": "data:,%23%21%20%2Fbin%2Fsh%0Aplist%3D%222379%202380%206443%209000%209999%2010250%2010259%2030000%2032767%22%0Afor%20p%20in%20%24plist%3B%20do%0A%20%20docker%20run%20--rm%20--detach%20--name%20sentinel-%24%7Bp%7D%20--publish%20%24%7Bp%7D%3A80%20--volume%20%2Fsentinel%3A%2Fusr%2Flocal%2Fapache2%2Fhtdocs%20httpd%0Adone%0A%0A"
         },
         "mode": 493
+      },
+      {
+        "filesystem": "root",
+        "path": "/sentinel/index.txt",
+        "overwrite": true,
+        "contents": {
+          "source": "data:,{{ hostvars[item].inventory_hostname_short }}"
+        },
+        "mode": 420
       },
       {
         "filesystem": "root",
         "path": "/etc/hostname",
         "overwrite": true,
         "contents": {
-          "source": "data:,{{ hostvars[item].inventory_hostname_short }}",
+          "source": "data:,{{ hostvars[item].inventory_hostname_short }}"
         },
         "mode": 420
       },
@@ -44,9 +53,9 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nDescription=Sentinel Listener Service\n[Service]\nType=simple\nExecStart=/sentinel/listener.sh\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=ocp-preflight Sentinel Service\nRequires=docker.service\nAfter=docker.service\n[Service]\nType=simple\    nExecStart=/sentinel/sentinel.sh\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
-        "name": "listener.service"
+        "name": "sentinel.service"
       }
     ]
   }

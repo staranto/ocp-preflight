@@ -1,9 +1,7 @@
 ---
-- name: "Confirm that output directory exists"
+- name: "Confirm that {{ outdir }}/{{ clusterName }} directory exists"
   file:
-    path: "{{ outdir }}"
+    path: "{{ outdir }}/{{ clusterName }}"
     state: directory
-
-- debug:
-    msg: "All output will be in {{ outdir }}"
+  tags: [ always ]
 ...

@@ -49,6 +49,7 @@ _ocp-preflight-challenge.{{ baseDomain }}. IN TXT 	"{{ clusterName }}"
 ; Reverse lookups.  I don't think these are technically needed by the
 ; the cluster, but they are needed by ocp-preflight as DNS resolution
 ; in both directions is verified.  This is a good double-check.
+; These entries will go in the reverse zone file.
 {% for host in groups['masters'] %}
 {{ '{:4}'.format(hostvars[host].ip.split('.')[3]) }} IN PTR {{ hostvars[host].inventory_hostname_short }}.{{ clusterName }}
 {% endfor %}

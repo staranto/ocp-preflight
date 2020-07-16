@@ -16,7 +16,7 @@
 baseDomain: "0.taranto.dev"
 clusterCIDR: "10.128.0.0/14"
 clusterHostPrefix: "23"  
-clusterName: ocp1
+clusterName: ocpz
 serviceCIDR: "172.30.0.0/16"
 
 # clusterName and baseDomain will be combined into the 
@@ -69,5 +69,5 @@ ocpArch: "x86_64"
 # What output directory do you want to dump all the generated
 # files into?  Do yourself a favor and leave this alone!
 # All output will be placed in a mmddyy directory in the CWD.
-outdir: "./out/{{ clusterName }}"
+outdir: "./out"
 ...

@@ -2,37 +2,37 @@
   - name: "Generate the bootsrap iPXE scripts"
     template:
       src: "templates/ipxe.template"
-      dest: "{{ outdir }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.ipxe"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.ipxe"
     loop: "{{ groups['bootstrap'] }}"
 
   - name: "Generate the master iPXE scripts"
     template:
       src: "templates/ipxe.template"
-      dest: "{{ outdir }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.ipxe"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.ipxe"
     loop: "{{ groups['masters'] }}"
 
   - name: "Generate the bootsrap sentinel iPXE scripts"
     template:
       src: "templates/ipxe-sentinel.template"
-      dest: "{{ outdir }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
     loop: "{{ groups['bootstrap'] }}"
 
   - name: "Generate the master sentinel iPXE scripts"
     template:
       src: "templates/ipxe-sentinel.template"
-      dest: "{{ outdir }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
     loop: "{{ groups['masters'] }}"
 
   - name: "Generate the bootsrap sentinel ignitions"
     template:
       src: "templates/sentinel.ign.template"
-      dest: "{{ outdir }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
     loop: "{{ groups['bootstrap'] }}"
 
   - name: "Generate the master sentinel ignitions"
     template:
       src: "templates/sentinel.ign.template"
-      dest: "{{ outdir }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
     loop: "{{ groups['masters'] }}"
 
 ...

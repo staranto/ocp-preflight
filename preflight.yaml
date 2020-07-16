@@ -39,85 +39,91 @@
   roles:
     - common
     
-  vars_prompt:
-  - name: airGap
-    prompt: "Air-gapped cluster environment"
-    private: no
-    default: "{{ airGap }}"
-  - name: baseDomain
-    prompt: "Base domain"
-    private: no
-    default: "{{ baseDomain | default('') }}"
-  - name: clusterName
-    prompt: "Cluster name"
-    private: no
-    default: "{{ clusterName | default('') }}"
-  - name: outdir
-    prompt: "Output directory"
-    private: no
-    default: "{{ outdir | default('') }}"
-  - name: installer
-    prompt: "Path to installer"
-    private: no
-    default: "{{ installer | default('') }}"
-  - name: cosVersion
-    prompt: "RHCOS Version to install (https://mirror.openshift.com/pub/openshift-v4)"
-    private: no
-    default: "{{ cosVersion | default('') }}"
-  - name: ocpArch
-    prompt: "Architecture (x86_64, ppc64le, s390x)"
-    private: no
-    default: "{{ ocpArch | default('') }}"
-  - name: clusterCIDR
-    prompt: "Cluster network CIDR"
-    private: no
-    default: "{{ clusterCIDR | default('') }}"
-  - name: clusterHostPrefix
-    prompt: "Cluster host prefix"
-    private: no
-    default: "{{ clusterHostPrefix | default('') }}"
-  - name: serviceCIDR
-    prompt: "Service network CIDR"
-    private: no
-    default: "{{ serviceCIDR | default('') }}"
-  - name: publicKeyFile
-    prompt: "Public key file"
-    private: no
-    default: "{{ publicKeyFile | default('') }}"
-  - name: privateKeyFile
-    prompt: "Private key file"
-    private: no
-    default: "{{ privateKeyFile | default('') }}"
-  - name: pullSecretFile
-    prompt: "Pull secret file"
-    private: no
-    default: "{{ pullSecretFile | default('') }}"
+  # vars_prompt:
+  # - name: baseDomain
+  #   prompt: "Base domain"
+  #   private: no
+  #   default: "{{ baseDomain | default('') }}"
+  # - name: clusterName
+  #   prompt: "Cluster name"
+  #   private: no
+  #   default: "{{ clusterName | default('') }}"
+  # - name: airGap
+  #   prompt: "Air-gapped cluster environment"
+  #   private: no
+  #   default: "{{ airGap }}"
+  # - name: outdir
+  #   prompt: "Output directory"
+  #   private: no
+  #   default: "{{ outdir | default('') }}"
+  # - name: installer
+  #   prompt: "Path to installer"
+  #   private: no
+  #   default: "{{ installer | default('') }}"
+  # - name: cosVersion
+  #   prompt: "RHCOS Version to install (https://mirror.openshift.com/pub/openshift-v4)"
+  #   private: no
+  #   default: "{{ cosVersion | default('') }}"
+  # - name: ocpArch
+  #   prompt: "Architecture (x86_64, ppc64le, s390x)"
+  #   private: no
+  #   default: "{{ ocpArch | default('') }}"
+  # - name: clusterCIDR
+  #   prompt: "Cluster network CIDR"
+  #   private: no
+  #   default: "{{ clusterCIDR | default('') }}"
+  # - name: clusterHostPrefix
+  #   prompt: "Cluster host prefix"
+  #   private: no
+  #   default: "{{ clusterHostPrefix | default('') }}"
+  # - name: serviceCIDR
+  #   prompt: "Service network CIDR"
+  #   private: no
+  #   default: "{{ serviceCIDR | default('') }}"
+  # - name: publicKeyFile
+  #   prompt: "Public key file"
+  #   private: no
+  #   default: "{{ publicKeyFile | default('') }}"
+  # - name: privateKeyFile
+  #   prompt: "Private key file"
+  #   private: no
+  #   default: "{{ privateKeyFile | default('') }}"
+  # - name: pullSecretFile
+  #   prompt: "Pull secret file"
+  #   private: no
+  #   default: "{{ pullSecretFile | default('') }}"
 
   tasks:
 
   - set_fact:
-      outdir: "{{ outdir }}/{{ clusterName }}"
-      # outdir: "{{ outdir }}/{{ '%m%d%y/%H%M%S' | strftime }}"
       rhcos:
         initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
         iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer.{{ ocpArch }}.iso"
         kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
         raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
+  
+  - name: "Setup output directory"
+    include_tasks: tasks/outdir.yaml
+    tags: [ always ]
 
-  - include_role:
-      name: core
-      apply:
-        tags:
-          - core
-    tags: [ never, core ]
+  - name: "Confirm installer"
+    include_tasks: tasks/installer.yaml
 
+  - name: "Confirm key pair"
+    include_tasks: tasks/keys.yaml
 
-  - include_role:
-      name: sentinel
-      apply:
-        tags:
-          - sentinel
-    tags: [ never, sentinel ]
+  - name: "Generate DNS zone file"
+    template:
+      src: "templates/bind-zone.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone"
+  - pause:
+      prompt: "Review this zone file ({{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone) and make sure your DNS matches!!"
+
+  - name: "Confirm DNS"
+    include_tasks: tasks/dns.yaml
+
+  - name: "Confirm installer infrastructure"
+    include_tasks: tasks/infra.yaml
 
   - name: "Confirm network"
     include_tasks: tasks/network.yaml
@@ -129,22 +135,22 @@
   - name: "Generate installer-config.yaml"
     template:
       src: "templates/install-config.yaml.template"
-      dest: "{{ outdir }}/install-config.yaml"
+      dest: "{{ outdir }}/{{ clusterName }}/install-config.yaml"
   - debug:
-      msg: "{{ lookup('file', '{{ outdir }}/install-config.yaml') }}"
+      msg: "{{ lookup('file', '{{ outdir }}/{{ clusterName }}/install-config.yaml') }}"
 
   - name: "Generate HAProxy config file"
     template:
       src: "templates/haproxy.cfg.template"
-      dest: "{{ outdir }}/haproxy.cfg"
+      dest: "{{ outdir }}/{{ clusterName }}/haproxy.cfg"
 
   - pause:
       prompt: "About to Genghis mode this config (Ctrl-C to (A)bort)"
 
   - name: "Save install-config.yaml"
     copy:
-      src: "{{ outdir }}/install-config.yaml"
-      dest: "{{ outdir }}/bak/"
+      src: "{{ outdir }}/{{ clusterName }}/install-config.yaml"
+      dest: "{{ outdir }}/{{ clusterName }}/bak/"
 
   - name: "Generate manifests"
     include_tasks: tasks/manifests.yaml

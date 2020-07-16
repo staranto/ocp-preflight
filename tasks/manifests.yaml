@@ -1,12 +1,12 @@
 ---
 - name: "Generate the manifests"
   shell:
-    cmd: "{{ installer }} create manifests --dir {{ outdir }}"
+    cmd: "{{ installer }} create manifests --dir {{ outdir }}/{{ clusterName }}"
 
 - name: "Save the generated manifests"
   copy:
-    src: "{{ outdir }}/{{ item }}"
-    dest: "{{ outdir }}/bak/manifests"
+    src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+    dest: "{{ outdir }}/{{ clusterName }}/bak/manifests"
   loop:
     - manifests
     - openshift

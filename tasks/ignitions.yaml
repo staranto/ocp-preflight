@@ -1,12 +1,12 @@
 ---
 - name: "Generate the ignition configs"
   shell:
-    cmd: "{{ installer }} create ignition-configs --dir {{ outdir }}"
+    cmd: "{{ installer }} create ignition-configs --dir {{ outdir }}/{{ clusterName }}"
 
 - name: "Save the generated ignition configs"
   copy:
-    src: "{{ outdir }}/{{ item }}"
-    dest: "{{ outdir }}/bak/ignitions"
+    src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+    dest: "{{ outdir }}/{{ clusterName }}/bak/ignitions"
   loop:
     - auth
     - metadata.json
