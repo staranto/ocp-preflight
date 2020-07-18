@@ -6,3 +6,4 @@ pull*.*
 test/
 bin/
 out/
+deployed/

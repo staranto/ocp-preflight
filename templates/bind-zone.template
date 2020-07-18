@@ -41,7 +41,7 @@ _ocp-preflight-challenge.{{ baseDomain }}. IN TXT 	"{{ clusterName }}"
 {{ '{:36}'.format(hostvars[groups['dns'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['dns'][0]].ip }}
 {{ '{:36}'.format(hostvars[groups['http'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['http'][0]].ip }}
 {{ '{:36}'.format(hostvars[groups['bootstrap'][0]].inventory_hostname_short~"."~clusterName) }} IN A {{ hostvars[groups['bootstrap'][0]].ip }}
-{{ '{:36}'.format(hostvars[groups['loadbalancer'][0]].inventory_hostname_short~"."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
+{{ '{:36}'.format(hostvars[groups['loadbalancer'][0]].inventory_hostname_short~".") }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
 {{ '{:36}'.format("api."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
 {{ '{:36}'.format("api-int."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
 {{ '{:36}'.format("*.apps."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}

@@ -6,8 +6,9 @@
 #   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
 
 set www http://{{ hostvars[groups['http'][0]].ip }}
+set ign {{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign
 
-kernel ${www}/fc/vmlinuz initrd=${www}/fc/cpio flatcar.first_boot=1 ignition.config.url=${www}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign
+kernel ${www}/fc/vmlinuz initrd=${www}/fc/cpio flatcar.first_boot=1 ignition.config.url=${www}/${ign}
 
 initrd ${www}/fc/cpio
 

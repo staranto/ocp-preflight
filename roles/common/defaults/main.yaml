@@ -16,7 +16,7 @@
 baseDomain: "0.taranto.dev"
 clusterCIDR: "10.128.0.0/14"
 clusterHostPrefix: "23"  
-clusterName: ocpz
+clusterName: ocpk
 serviceCIDR: "172.30.0.0/16"
 
 # clusterName and baseDomain will be combined into the 

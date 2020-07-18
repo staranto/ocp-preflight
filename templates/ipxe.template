@@ -5,8 +5,13 @@
 #   By:  {{ lookup('pipe', 'whoami') }} @ {{ lookup('pipe', 'hostname') }}
 #   Git: {{ lookup('pipe', 'git log -n 1 | head -n 1') }}
 
-kernel http://{{ hostvars[groups['http'][0]].ip }}/kernel rd.neednet=1 initrd=http://{{ hostvars[groups['http'][0]].ip }}/initramfs console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=sda coreos.inst.image_url=http://{{ hostvars[groups['http'][0]].ip }}/raw coreos.inst.ignition_url=http://{{ hostvars[groups['http'][0]].ip }}/sentinel.ign ip={{ hostvars[item].ip }}::192.168.86.1:255.255.255.0:{{ item }}:ens18:none nameserver=192.168.86.41
+set www  {{ hostvars[groups['http'][0]].ip }}
+set ip   {{ hostvars[item].ip }}
+set host {{ item }}
+set dns  {{ hostvars[groups['dns'][0]].ip }}
 
-initrd http://{{ hostvars[groups['http'][0]].ip }}/initramfs 
+kernel http://${www}/rhcos/kernel rd.neednet=1 initrd=http://${www}/rhcos/initramfs console=tty0 coreos.inst=yes coreos.inst.install_dev=sda coreos.inst.image_url=http://${www}/rhcos/raw coreos.inst.ignition_url=http://${www}/master.ign ip=${ip}::192.168.86.1:255.255.255.0:${host}:ens18:none nameserver=${dns}
+
+initrd http://${www}/rhcos/initramfs 
 
 boot
