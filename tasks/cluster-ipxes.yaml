@@ -1,0 +1,13 @@
+---
+  - name: "Generate the bootsrap iPXE scripts"
+    template:
+      src: "templates/ipxe.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.ipxe"
+    loop: "{{ groups['bootstrap'] }}"
+
+  - name: "Generate the master iPXE scripts"
+    template:
+      src: "templates/ipxe.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.ipxe"
+    loop: "{{ groups['masters'] }}"
+...

@@ -112,12 +112,24 @@
   - name: "Confirm key pair"
     include_tasks: tasks/keys.yaml
 
-  - name: "Generate DNS zone file"
+  - name: "Generate DNS zone template"
     template:
       src: "templates/bind-zone.template"
       dest: "{{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone"
+
+  - name: "Generate HAProxy config template"
+    template:
+      src: "templates/haproxy.cfg.template"
+      dest: "{{ outdir }}/{{ clusterName }}/haproxy.cfg"
+
+  - name: "Generate sentinel iPXEs and Ignitions"
+    include_tasks: tasks/sentinel.yaml
+
   - pause:
-      prompt: "Review this zone file ({{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone) and make sure your DNS matches!!"
+      prompt: |
+        Zone template: {{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone
+        HAProxy template: {{ outdir }}/{{ clusterName }}/haproxy.cfg
+        Bootstrap the sentinels.
 
   - name: "Confirm DNS"
     include_tasks: tasks/dns.yaml
@@ -132,20 +144,15 @@
   - name: "Confirm registries"
     include_tasks: tasks/registries.yaml
 
+
+
+  - pause:
+      prompt: "About to Genghis mode this config (Ctrl-C to (A)bort)"
+
   - name: "Generate installer-config.yaml"
     template:
       src: "templates/install-config.yaml.template"
       dest: "{{ outdir }}/{{ clusterName }}/install-config.yaml"
-  - debug:
-      msg: "{{ lookup('file', '{{ outdir }}/{{ clusterName }}/install-config.yaml') }}"
-
-  - name: "Generate HAProxy config file"
-    template:
-      src: "templates/haproxy.cfg.template"
-      dest: "{{ outdir }}/{{ clusterName }}/haproxy.cfg"
-
-  - pause:
-      prompt: "About to Genghis mode this config (Ctrl-C to (A)bort)"
 
   - name: "Save install-config.yaml"
     copy:
@@ -158,6 +165,6 @@
   - name: "Generate ignitions"
     include_tasks: tasks/ignitions.yaml
 
-  - name: "Generate iPXEs"
-    include_tasks: tasks/ipxes.yaml
+  - name: "Generate Cluster iPXEs"
+    include_tasks: tasks/cluster-ipxes.yaml
 ...

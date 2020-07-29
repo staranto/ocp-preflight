@@ -1,0 +1,37 @@
+---
+  - name: "Generate the bootsrap sentinel iPXE script"
+    template:
+      src: "templates/ipxe-sentinel.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
+    loop: "{{ groups['bootstrap'] }}"
+
+  - name: "Generate the bootsrap sentinel ignition"
+    template:
+      src: "templates/sentinel.ign.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
+    loop: "{{ groups['bootstrap'] }}"
+
+  - name: "Generate the master sentinel iPXE scripts"
+    template:
+      src: "templates/ipxe-sentinel.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
+    loop: "{{ groups['masters'] }}"
+
+  - name: "Generate the master sentinel ignitions"
+    template:
+      src: "templates/sentinel.ign.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
+    loop: "{{ groups['masters'] }}"
+
+  - name: "Generate the worker sentinel iPXE scripts"
+    template:
+      src: "templates/ipxe-sentinel.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ipxe"
+    loop: "{{ groups['workers'] }}"
+
+  - name: "Generate the worker sentinel ignitions"
+    template:
+      src: "templates/sentinel.ign.template"
+      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}-sentinel.ign"
+    loop: "{{ groups['workers'] }}"
+...

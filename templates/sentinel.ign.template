@@ -53,7 +53,7 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nDescription=ocp-preflight Sentinel Service\nRequires=docker.service\nAfter=docker.service\n[Service]\nType=simple\    nExecStart=/sentinel/sentinel.sh\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=ocp-preflight Sentinel Service\nRequires=docker.service\nAfter=docker.service\n[Service]\nType=simple\nExecStart=/sentinel/sentinel.sh\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "sentinel.service"
       }
