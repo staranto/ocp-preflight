@@ -1,0 +1,105 @@
+# Generated with ocp-preflight (https://github.com/staranto/ocp-preflight)
+#   On:  2020-07-09 05:33:29.208556
+#   By:  stephenta @ TARANTOSMBP.local
+#   Git: commit d31c66fda49fdbbacfc7ead79b379b774c856fcc
+
+# ####################################################################
+# This inventory will need to be edited after it is generated.  This 
+# is also a great opportunity to think through the environment and 
+# be sure things appears correct.
+
+# Entries must sync up with the DNS zone for 0.taranto.dev.
+# By extra attentive and doublecheck everything.  Time well spent!
+# ####################################################################
+
+
+all:
+  children:
+    # These are the OCP master nodes.  There should be an odd number >=3.
+    # If you're using this tool to help you setup your cluster, the 
+    # number should be 3!! Don't change it.  I would also highly
+    # recommend that you leave the 'master-n' prefix along.  If you have
+    # tooling that works with the simple hostname, you could change it
+    # to be 'ocpz-master-0'.  But keep the zero-based
+    # index in there.
+    masters:
+      hosts:
+        master-0.ocpz.0.taranto.dev:
+          ip: "192.168.86.120"
+        master-1.ocpz.0.taranto.dev:
+          ip: "192.168.86.121"
+        master-2.ocpz.0.taranto.dev:
+          ip: "192.168.86.122"
+
+    # etcd hosts that should track the masters.  I *think* that the
+    # simple hostname needs to stay 'etcd-n'.
+    etcds:
+      hosts:
+        etcd-0.ocpz.0.taranto.dev:
+          ip: "192.168.86.120"
+        etcd-1.ocpz.0.taranto.dev:
+          ip: "192.168.86.121"
+        etcd-2.ocpz.0.taranto.dev:
+          ip: "192.168.86.122"
+
+api.ocpz.0.taranto.dev      ip=192.168.86.129
+api-int.ocpz.0.taranto.dev  ip=192.168.86.129
+
+# Optional worker nodes if you want to provision them when
+# you initially build the cluster.
+worker-0.ocpz.0.taranto.dev ip=192.168.86.123
+worker-1.ocpz.0.taranto.dev ip=192.168.86.124
+worker-2.ocpz.0.taranto.dev ip=192.168.86.125
+worker-3.ocpz.0.taranto.dev ip=192.168.86.126
+worker-4.ocpz.0.taranto.dev ip=192.168.86.127
+
+# Sample apps hostname
+console.apps.ocpz.0.taranto.dev ip=192.168.86.129
+
+# bootstrap is just temporary.  DHCP can be used, but let's not
+# mess around.  Give it a static IP like everything else.
+bootstrap.ocpz.0.taranto.dev ip=192.168.86.130
+
+# dns server
+nas-1.0.taranto.dev ip=192.168.86.41
+
+# Used to proxy all traffic into the cluster.
+lb.0.taranto.dev ip=192.168.86.240 alt=192.168.86.128 alt=192.168.86.129
+
+# http server used to serve up ignition and boot files.
+www.0.taranto.dev ip=192.168.86.242
+
+# #############################################
+
+[masters]
+master-0.ocpz.0.taranto.dev
+master-1.ocpz.0.taranto.dev
+master-2.ocpz.0.taranto.dev
+
+[etcd]
+etcd-0.ocpz.0.taranto.dev
+etcd-1.ocpz.0.taranto.dev
+etcd-2.ocpz.0.taranto.dev
+
+[api]
+api.ocpz.0.taranto.dev
+api-int.ocpz.0.taranto.dev
+
+[workers]
+worker-0.ocpz.0.taranto.dev
+worker-1.ocpz.0.taranto.dev
+worker-2.ocpz.0.taranto.dev
+worker-3.ocpz.0.taranto.dev
+worker-4.ocpz.0.taranto.dev
+
+[bootstrap]
+bootstrap.ocpz.0.taranto.dev
+
+[dns]
+nas-1.0.taranto.dev
+
+[http]
+www.0.taranto.dev
+
+[loadbalancer]
+lb.0.taranto.dev
