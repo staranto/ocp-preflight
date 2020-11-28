@@ -1,0 +1,18 @@
+---
+
+  - set_fact:
+      boots: [ "{{ boot }}" ]
+
+  - set_fact:
+      boots: [ "ipxe", "pxe" ]
+    when: boot == "all"
+
+  - debug:
+      var: boots
+
+  - include_tasks: "tasks/node-boot-templates.yaml"
+    loop: "{{ boots }}"
+    loop_control:
+      loop_var: "bitem"
+
+...

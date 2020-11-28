@@ -10,8 +10,9 @@ set ip   {{ hostvars[item].ip }}
 set host {{ item }}
 set dns  {{ hostvars[groups['dns'][0]].ip }}
 
-kernel http://${www}/{{ rhcos.kernel }} coreos.live.rootfs_url=http://${www}/{{ rhcos.rootfs }} coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://${www}/{{ fname }}.ign
-
-initrd http://${www}/{{ rhcos.initramfs }}
-
-boot
+DEFAULT pxeboot
+TIMEOUT 20
+PROMPT 0
+LABEL pxeboot
+    KERNEL http://${www}/{{ rhcos.kernel }} 
+    APPEND initrd=http://${www}/{{ rhcos.initramfs }} coreos.live.rootfs_url=http://${www}/{{ rhcos.rootfs }} coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://${www}/{{ fname }}.ign

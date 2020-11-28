@@ -1,9 +1,11 @@
+*.ign
+*.txt
 .DS_Store
 /0*
-*.txt
-hosts.*
-pull*.*
-test/
 bin/
-out/
 deployed/
+hosts.*
+out/
+pull*.*
+rhcos/
+test/

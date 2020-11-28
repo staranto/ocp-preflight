@@ -39,68 +39,16 @@
   roles:
     - common
     
-  # vars_prompt:
-  # - name: baseDomain
-  #   prompt: "Base domain"
-  #   private: no
-  #   default: "{{ baseDomain | default('') }}"
-  # - name: clusterName
-  #   prompt: "Cluster name"
-  #   private: no
-  #   default: "{{ clusterName | default('') }}"
-  # - name: airGap
-  #   prompt: "Air-gapped cluster environment"
-  #   private: no
-  #   default: "{{ airGap }}"
-  # - name: outdir
-  #   prompt: "Output directory"
-  #   private: no
-  #   default: "{{ outdir | default('') }}"
-  # - name: installer
-  #   prompt: "Path to installer"
-  #   private: no
-  #   default: "{{ installer | default('') }}"
-  # - name: cosVersion
-  #   prompt: "RHCOS Version to install (https://mirror.openshift.com/pub/openshift-v4)"
-  #   private: no
-  #   default: "{{ cosVersion | default('') }}"
-  # - name: ocpArch
-  #   prompt: "Architecture (x86_64, ppc64le, s390x)"
-  #   private: no
-  #   default: "{{ ocpArch | default('') }}"
-  # - name: clusterCIDR
-  #   prompt: "Cluster network CIDR"
-  #   private: no
-  #   default: "{{ clusterCIDR | default('') }}"
-  # - name: clusterHostPrefix
-  #   prompt: "Cluster host prefix"
-  #   private: no
-  #   default: "{{ clusterHostPrefix | default('') }}"
-  # - name: serviceCIDR
-  #   prompt: "Service network CIDR"
-  #   private: no
-  #   default: "{{ serviceCIDR | default('') }}"
-  # - name: publicKeyFile
-  #   prompt: "Public key file"
-  #   private: no
-  #   default: "{{ publicKeyFile | default('') }}"
-  # - name: privateKeyFile
-  #   prompt: "Private key file"
-  #   private: no
-  #   default: "{{ privateKeyFile | default('') }}"
-  # - name: pullSecretFile
-  #   prompt: "Pull secret file"
-  #   private: no
-  #   default: "{{ pullSecretFile | default('') }}"
-
   tasks:
 
   - set_fact:
       rhcos:
-        initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-initramfs.{{ ocpArch }}.img"
-        iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer.{{ ocpArch }}.iso"
-        kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-installer-kernel-{{ ocpArch }}"
-        raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
+        initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-initramfs.{{ ocpArch }}.img"
+        #iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live.{{ ocpArch }}.iso"
+        kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-kernel-{{ ocpArch }}"
+        #raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
+        rootfs:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-rootfs.{{ ocpArch }}.img"
+        discovery: "discovery_image_ocpz.iso"
   
   - name: "Setup output directory"
     include_tasks: tasks/outdir.yaml
@@ -124,6 +72,7 @@
 
   - name: "Generate sentinel iPXEs and Ignitions"
     include_tasks: tasks/sentinel.yaml
+    tags: [ never, sentinel ]
 
   - pause:
       prompt: |
@@ -165,6 +114,6 @@
   - name: "Generate ignitions"
     include_tasks: tasks/ignitions.yaml
 
-  - name: "Generate Cluster iPXEs"
-    include_tasks: tasks/cluster-ipxes.yaml
+  - name: "Generate node bootstrap files"
+    include_tasks: tasks/node-boots.yaml
 ...

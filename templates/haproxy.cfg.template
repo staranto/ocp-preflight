@@ -49,12 +49,12 @@ backend controlplanemc
 
 backend secure
     balance source
-{% for host in groups['masters'] %}
+{% for host in groups['workers'] %}
     server {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].ip }}:443 check 
 {% endfor %}
 
 backend insecure
     balance source
-{% for host in groups['masters'] %}
+{% for host in groups['workers'] %}
     server {{ hostvars[host].inventory_hostname_short }} {{ hostvars[host].ip }}:80 check 
 {% endfor %}

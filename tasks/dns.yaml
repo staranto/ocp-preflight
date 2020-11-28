@@ -12,10 +12,13 @@
   assert:
     that: lookup('dig', item) == hostvars[groups['loadbalancer'][0]].ip
     success_msg: "{{ item }} is {{ hostvars[item].ip }}"
-    fail_msg:    "{{ item }} is {{ lookup('dig', item) }} not {{ hostvars[item].ip }}"
+    fail_msg:    "{{ item }} is {{ lookup('dig', item) }} not {{ hostvars[groups['loadbalancer'][0]].ip }}"
   when: hostvars[item].ip is defined
   loop: "{{ groups['api'] }}"
   ignore_errors: true
+
+- debug:
+    var: hostvars[groups['loadbalancer'][0]].alt
 
 - name: "Confirm that reverse lookups resolve properly"
   assert:
@@ -31,8 +34,6 @@
   register: stdout
 - debug:
     msg: "This host is using {{ stdout.stdout_lines[0] | regex_findall('\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b') }} for DNS."
-
-# Confirm that api. and api-int. point at the loadbalancer IP.
 
 # Confirm etcd A records.
 
