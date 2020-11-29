@@ -1,16 +1,16 @@
 ---
 - block:
-    - name: "Confirm that {{ outdir }}/{{ clusterName }} directory exists"
+    - name: "Confirm that {{ outdir }}/{{ clusterName }} directories exist"
       file:
-        path: "{{ outdir }}/{{ clusterName }}"
+        path: "{{ item }}"
         state: directory
+      loop:
+        - "{{ outdir }}/{{ clusterName }}/archive"
+        - "{{ outdir }}/{{ clusterName }}/artifacts"
 
     - stat:
         path: "{{ outdir }}/{{ clusterName }}/artifacts/install-config.yaml"
       register: s
-
-    - debug:
-        var: s
 
     - name: "Archive existing artifacts"
       archive:
@@ -21,6 +21,4 @@
         remove: yes
       when: s.stat.exists is defined and s.stat.exists
   tags: [ always ]
-
-
 ...
