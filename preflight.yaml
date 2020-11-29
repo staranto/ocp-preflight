@@ -25,10 +25,9 @@
 
 # Usage:
 # 1. git clone https://github.com/staranto/ocp-preflight
-# 2. Review, understand and then edit vars/vars.yaml.  Then
-#    review it again.  Then have someone else review it and
-#    check your work.
-# 3. ansible-playbook ocp-preflight.yaml
+# 2. Review, understand and then edit roles/common/default.yaml.
+#    Then review it again.  Then have someone else review it.
+# 3. ansible-playbook ocp-preflight.yaml -i <inventory_file>
  
 ---
 - name: "Preflight check for OCP UPI install"
@@ -80,7 +79,7 @@
             prompt: |
               Zone template: {{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone
               HAProxy template: {{ outdir }}/{{ clusterName }}/haproxy.cfg
-              Bootstrap the sentinels.
+              Bootstrap the sentinels or Ctrl-C to (A)bort.
       tags: [ "1", "2", "3" ]
   
     - block:
