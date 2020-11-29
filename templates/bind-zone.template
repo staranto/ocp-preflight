@@ -59,4 +59,4 @@ _ocp-preflight-challenge.{{ baseDomain }}. IN TXT 	"{{ clusterName }}"
 {{ '{:4}'.format(hostvars[groups['bootstrap'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['bootstrap'][0]].inventory_hostname_short }}.{{ clusterName }}
 {{ '{:4}'.format(hostvars[groups['dns'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['dns'][0]].inventory_hostname_short }}.
 {{ '{:4}'.format(hostvars[groups['http'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['http'][0]].inventory_hostname_short }}.
-{{ '{:4}'.format(hostvars[groups['loadbalancer'][0]].ip.split('.')[3]) }} IN PTR {{ hostvars[groups['loadbalancer'][0]].inventory_hostname_short }}.{{ clusterName }}.
+{{ '{:4}'.format(hostvars[groups['loadbalancer'][0]].ip[0].split('.')[3]) }} IN PTR {{ hostvars[groups['loadbalancer'][0]].inventory_hostname_short }}.{{ clusterName }}.

@@ -1,0 +1,18 @@
+---
+- name: "Preflight check for OCP UPI install"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  roles:
+    - common
+    
+  tasks:
+
+  - debug:
+      var: groups
+
+  - debug:
+      var: hostvars[groups['dns'][0]].ip.split('.')[3]
+#.ip[0].split('.')[3])
+...
