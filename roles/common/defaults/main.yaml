@@ -25,7 +25,7 @@ serviceCIDR: "172.30.0.0/16"
 
 # The private key is not used directly by the install
 # process, but it should be specified here as a 
-# safety check to confirm that we're using a valud
+# safety check to confirm that we're using a valid
 # public/private key pair.
 privateKeyFile: "~/.ssh/id_rsa"
 publicKeyFile: "~/.ssh/id_rsa.pub"
@@ -46,9 +46,9 @@ pullSecretFile: "pull-secret.txt"
 # created as well as additional/modified steps.
 airGap: false
 
-# What's the path to the openshift-install executable.
-# Specify and absolute path just to avoid confusion and
-# any chance of a problem.  Find and instal the most
+# What's the path to the openshift-install executable?
+# Specify an absolute path just to avoid confusion and
+# any chance of a problem.  Find and install the most
 # appropriate version from one of the architecture 
 # directories at https://mirror.openshift.com/pub/openshift-v4/
 installer: ./bin/openshift-install

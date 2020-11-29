@@ -15,7 +15,7 @@
 # the negligient openshift-installer blindly deletes them.
 
 # We're intentionally avoiding driving the actual install
-# itself.  That's some medieval stuff and best left up 
+# itself.  That's some medieval stuff and best left up
 # to a human.
 
 # We're also leaving out explicit, detailed instructions on
@@ -28,7 +28,7 @@
 # 2. Review, understand and then edit roles/common/default.yaml.
 #    Then review it again.  Then have someone else review it.
 # 3. ansible-playbook ocp-preflight.yaml -i <inventory_file>
- 
+
 ---
 - name: "Preflight check for OCP UPI install"
   hosts: localhost
@@ -37,7 +37,7 @@
 
   roles:
     - common
-    
+
   tasks:
 
     - set_fact:
@@ -48,75 +48,75 @@
           #raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
           rootfs:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-rootfs.{{ ocpArch }}.img"
           discovery: "discovery_image_ocpz.iso"
-    
+
     - name: "Setup output directory"
       include_tasks: tasks/outdir.yaml
       tags: [ always ]
-  
+
     - name: "Confirm installer"
       include_tasks: tasks/installer.yaml
-  
+
     - name: "Confirm key pair"
       include_tasks: tasks/keys.yaml
-  
-  
+
+
     - block:
         - name: "Generate DNS zone template"
           template:
             src: "templates/bind-zone.template"
             dest: "{{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone"
-    
+
         - name: "Generate HAProxy config template"
           template:
             src: "templates/haproxy.cfg.template"
             dest: "{{ outdir }}/{{ clusterName }}/haproxy.cfg"
-    
+
         - name: "Generate sentinel iPXEs and Ignitions"
           include_tasks: tasks/sentinel.yaml
           tags: [ never, sentinel ]
-    
+
         - pause:
             prompt: |
               Zone template: {{ outdir }}/{{ clusterName }}/{{ baseDomain }}.zone
               HAProxy template: {{ outdir }}/{{ clusterName }}/haproxy.cfg
               Bootstrap the sentinels or Ctrl-C to (A)bort.
       tags: [ "1", "2", "3" ]
-  
+
     - block:
         - name: "Confirm DNS"
           include_tasks: tasks/dns.yaml
-    
+
         - name: "Confirm installer infrastructure"
           include_tasks: tasks/infra.yaml
-    
+
         - name: "Confirm network"
           include_tasks: tasks/network.yaml
           tags: [ never, network ]
-    
+
         - name: "Confirm registries"
           include_tasks: tasks/registries.yaml
       tags: [ "2", "3" ]
-  
+
     - block:
         - pause:
             prompt: "About to Genghis mode this config (Ctrl-C to (A)bort)"
-    
+
         - name: "Generate installer-config.yaml"
           template:
             src: "templates/install-config.yaml.template"
             dest: "{{ outdir }}/{{ clusterName }}/install-config.yaml"
-    
+
         - name: "Save install-config.yaml"
           copy:
             src: "{{ outdir }}/{{ clusterName }}/install-config.yaml"
             dest: "{{ outdir }}/{{ clusterName }}/artifacts/"
-    
+
         - name: "Generate manifests"
           include_tasks: tasks/manifests.yaml
-    
+
         - name: "Generate ignitions"
           include_tasks: tasks/ignitions.yaml
-    
+
         - name: "Generate node bootstrap files"
           include_tasks: tasks/node-boots.yaml
       tags: [ "3" ]
