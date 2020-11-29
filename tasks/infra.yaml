@@ -22,10 +22,6 @@
     url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}"
     return_content: no
     status_code: [200, 403]
-  # get_url:
-  #   url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}"
-  #   force: 
-  #   dest: "{{ tempfile.path }}"
 
 - name: "Confirm that all RHCOS bootstrap images are available on HTTP server"
   get_url:

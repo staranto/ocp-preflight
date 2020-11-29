@@ -18,7 +18,7 @@
   ignore_errors: true
 
 - debug:
-    var: hostvars[groups['loadbalancer'][0]].alt
+    var: hostvars[groups['loadbalancer'][0]].ip
 
 - name: "Confirm that reverse lookups resolve properly"
   assert:
