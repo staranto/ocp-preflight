@@ -74,5 +74,5 @@ outdir: "./out"
 
 # What type of bootstrap artifacts do you want to create?
 # ipxe, iso, pxe or all
-boot: "all"
+boot: "ipxe"
 ...

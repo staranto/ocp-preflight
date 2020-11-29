@@ -1,3 +1,4 @@
+*.code-workspace
 *.ign
 *.txt
 .DS_Store

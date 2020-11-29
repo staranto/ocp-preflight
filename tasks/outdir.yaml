@@ -1,7 +1,26 @@
 ---
-- name: "Confirm that {{ outdir }}/{{ clusterName }} directory exists"
-  file:
-    path: "{{ outdir }}/{{ clusterName }}"
-    state: directory
+- block:
+    - name: "Confirm that {{ outdir }}/{{ clusterName }} directory exists"
+      file:
+        path: "{{ outdir }}/{{ clusterName }}"
+        state: directory
+
+    - stat:
+        path: "{{ outdir }}/{{ clusterName }}/artifacts/install-config.yaml"
+      register: s
+
+    - debug:
+        var: s
+
+    - name: "Archive existing artifacts"
+      archive:
+        path: "{{ outdir }}/{{ clusterName }}/artifacts"
+        dest: "{{ outdir }}/{{ clusterName }}/archive/{{ '%Y%m%d-%H%M' | strftime(s.stat.mtime) }}.tar.gz"
+        exclude_path:
+        - "{{ outdir }}/{{ clusterName }}/archive"
+        remove: yes
+      when: s.stat.exists is defined and s.stat.exists
   tags: [ always ]
+
+
 ...

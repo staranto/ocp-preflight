@@ -6,11 +6,23 @@
 - name: "Save the generated ignition configs"
   copy:
     src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
-    dest: "{{ outdir }}/{{ clusterName }}/bak/ignitions"
+    dest: "{{ outdir }}/{{ clusterName }}/artifacts/ignitions"
   loop:
-    - auth
-    - metadata.json
     - bootstrap.ign
     - master.ign
     - worker.ign
+
+- copy:
+    src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+    dest: "{{ outdir }}/{{ clusterName }}/artifacts"
+  loop:
+    - auth
+    - metadata.json
+
+- file:
+    path: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+    state: absent
+  loop:
+    - auth
+    - metadata.json
 ...

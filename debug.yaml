@@ -8,11 +8,12 @@
     - common
     
   tasks:
+    - block:
+      - name: Include tasks from db.yml
+        include_tasks: db.yml
+      tags: db
 
-  - debug:
-      var: groups
 
-  - debug:
-      var: hostvars[groups['dns'][0]].ip.split('.')[3]
-#.ip[0].split('.')[3])
+    - debug:
+        var: hostvars[groups['dns'][0]].ip.split('.')[3]
 ...

@@ -6,7 +6,7 @@
 - name: "Save the generated manifests"
   copy:
     src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
-    dest: "{{ outdir }}/{{ clusterName }}/bak/manifests"
+    dest: "{{ outdir }}/{{ clusterName }}/artifacts/manifests"
   loop:
     - manifests
     - openshift
