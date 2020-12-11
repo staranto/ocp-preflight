@@ -5,7 +5,7 @@
   - name: "Generate the {{ bitem }} bootstrap script"
     template:
       src: "templates/{{ bitem }}.template"
-      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.{{ bitem }}"
+      dest: "{{ outdir }}/{{ clusterName }}/www/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.{{ bitem }}"
     loop: "{{ groups['bootstrap'] }}"
 
   - set_fact:
@@ -14,7 +14,7 @@
   - name: "Generate the {{ bitem }} master scripts"
     template:
       src: "templates/{{ bitem }}.template"
-      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.{{ bitem }}"
+      dest: "{{ outdir }}/{{ clusterName }}/www/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.{{ bitem }}"
     loop: "{{ groups['masters'] }}"
 
   - set_fact:
@@ -23,6 +23,6 @@
   - name: "Generate the {{ bitem }} worker scripts"
     template:
       src: "templates/{{ bitem }}.template"
-      dest: "{{ outdir }}/{{ clusterName }}/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.{{ bitem }}"
+      dest: "{{ outdir }}/{{ clusterName }}/www/{{ hostvars[item].inventory_hostname_short }}-{{ clusterName }}.{{ bitem }}"
     loop: "{{ groups['workers'] }}"
 ...

@@ -3,26 +3,43 @@
   shell:
     cmd: "{{ installer }} create ignition-configs --dir {{ outdir }}/{{ clusterName }}"
 
-- name: "Save the generated ignition configs"
-  copy:
-    src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
-    dest: "{{ outdir }}/{{ clusterName }}/artifacts/ignitions"
-  loop:
-    - bootstrap.ign
-    - master.ign
-    - worker.ign
+# - name: "Save the generated ignition configs"
+#   copy:
+#     src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+#     dest: "{{ outdir }}/{{ clusterName }}/artifacts/ignitions/"
+#   loop:
+#     - bootstrap.ign
+#     - master.ign
+#     - worker.ign
 
-- copy:
-    src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
-    dest: "{{ outdir }}/{{ clusterName }}/artifacts"
-  loop:
-    - auth
-    - metadata.json
+# - name: "Move the generated ignition configs to www"
+#   copy:
+#     src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+#     dest: "{{ outdir }}/{{ clusterName }}/www/"
+#   loop:
+#     - bootstrap.ign
+#     - master.ign
+#     - worker.ign
 
-- file:
-    path: "{{ outdir }}/{{ clusterName }}/{{ item }}"
-    state: absent
-  loop:
-    - auth
-    - metadata.json
+# - file:
+#     path: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+#     state: absent
+#   loop:
+#     - bootstrap.ign
+#     - master.ign
+#     - worker.ign
+
+# - copy:
+#     src: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+#     dest: "{{ outdir }}/{{ clusterName }}/artifacts/"
+#   loop:
+#     - auth
+#     - metadata.json
+
+# - file:
+#     path: "{{ outdir }}/{{ clusterName }}/{{ item }}"
+#     state: absent
+#   loop:
+#     - auth
+#     - metadata.json
 ...

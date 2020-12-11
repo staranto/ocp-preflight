@@ -41,20 +41,20 @@
 
 #  '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')]
 
-- name: "Confirm the administrative control of DNS domain."
-  block:
-    - debug:
-        msg: |
-          Create this TXT record in your DNS public zone
-          Name: _ocp-preflight-challenge.{{ baseDomain }}
-          Value: "{{ clusterName }}"
-          TTL: 3  <- something very short
-      
-    - pause:
-
-    - name: "Confirm that challenge TXT record exists"
-      assert:
-        that: "'{{ clusterName }}' == lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT')"
-        success_msg: "Correct record found"
-        fail_msg:    "Incorrect challenge value of {{ lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT') }}"
+    # - name: "Confirm the administrative control of DNS domain."
+    #   block:
+    #     - debug:
+    #         msg: |
+    #           Create this TXT record in your DNS public zone
+    #           Name: _ocp-preflight-challenge.{{ baseDomain }}
+    #           Value: "{{ clusterName }}"
+    #           TTL: 3  <- something very short
+    #       
+    #     - pause:
+    # 
+    #     - name: "Confirm that challenge TXT record exists"
+    #       assert:
+    #         that: "'{{ clusterName }}' == lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT')"
+    #         success_msg: "Correct record found"
+    #         fail_msg:    "Incorrect challenge value of {{ lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT') }}"
 ...

@@ -1,9 +1,13 @@
 ---
 - block:
-    - name: "Confirm that {{ outdir }}/{{ clusterName }} directory exists"
+    - name: "Confirm that {{ outdir }}/{{ clusterName }} directories exists"
       file:
-        path: "{{ outdir }}/{{ clusterName }}"
+        path: "{{ outdir }}/{{ clusterName }}/{{ item }}"
         state: directory
+      loop:
+        - archive
+        - artifacts
+        - www
 
     - stat:
         path: "{{ outdir }}/{{ clusterName }}/artifacts/install-config.yaml"

@@ -13,10 +13,10 @@
 # You will need to create a challenge TXT record and will
 # also need to do wildcard forwarding into the cluster.
 # *.apps.{{ clusterName }}.{{ baseDomain }}
-baseDomain: "0.taranto.dev"
+baseDomain: "taranto.local"
 clusterCIDR: "10.128.0.0/14"
 clusterHostPrefix: "23"  
-clusterName: ocpz
+clusterName: "mylocal"
 serviceCIDR: "172.30.0.0/16"
 
 # clusterName and baseDomain will be combined into the 
@@ -34,7 +34,7 @@ publicKeyFile: "~/.ssh/id_rsa.pub"
 # https://cloud.redhat.com/openshift/install/pull-secret.
 # It would probably be helpful from a troubleshooting
 # perspective to run it through jq first.
-pullSecretFile: "pull-secret.txt"
+pullSecretFile: "pull-secret.json"
 
 # #########################################################
 # #########################################################
