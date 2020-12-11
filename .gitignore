@@ -5,7 +5,7 @@
 /0*
 bin/
 deployed/
-hosts.*
+hosts*.*
 out/
 pull*.*
 rhcos/
