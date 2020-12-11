@@ -1,20 +1,20 @@
 ---
 - name: "Confirm that hostnames resolve properly"
   assert:
-    that: hostvars[item].ip == lookup('dig', item)
-    success_msg: "{{ item }} is {{ hostvars[item].ip }}"
-    fail_msg:    "{{ item }} is {{ lookup('dig', item) }} not {{ hostvars[item].ip }}"
+    that: lookup('dig', item) in hostvars[item].ip
+    success_msg: "{{ item }}/{{ hostvars[item].ip }} matches {{ lookup('dig', item) }}"
+    fail_msg: "{{ item }}/{{ hostvars[item].ip }} does not match {{ lookup('dig', item) }}"
   when: hostvars[item].ip is defined
   loop: "{{ query('inventory_hostnames', 'all') }}"
   ignore_errors: true
 
 - name: "Confirm that API hostnames match loadbalancer"
   assert:
-    that: lookup('dig', item) == hostvars[groups['loadbalancer'][0]].ip
-    success_msg: "{{ item }} is {{ hostvars[item].ip }}"
-    fail_msg:    "{{ item }} is {{ lookup('dig', item) }} not {{ hostvars[groups['loadbalancer'][0]].ip }}"
+    that: lookup('dig', item ) in hostvars[groups['loadbalancer'][0]].ip
+    success_msg: "{{ item }}/{{ hostvars[groups['loadbalancer'][0]].ip }} matches {{ lookup('dig', item) }}"
+    fail_msg: "{{ item }}/{{ hostvars[groups['loadbalancer'][0]].ip }} does not match {{ lookup('dig', item) }}"
   when: hostvars[item].ip is defined
-  loop: "{{ groups['api'] }}"
+  loop: "{{ query('inventory_hostnames', 'api') }}"
   ignore_errors: true
 
 - debug:
@@ -39,22 +39,20 @@
 
 # Confirm etcd SRV records.
 
-#  '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')]
+- name: "Confirm the administrative control of DNS domain."
+  block:
+    - debug:
+        msg: |
+          Create this TXT record in your DNS public zone
+          Name: _ocp-preflight-challenge.{{ baseDomain }}
+          Value: "{{ clusterName }}"
+          TTL: 3  <- something very short
+      
+    - pause:
 
-    # - name: "Confirm the administrative control of DNS domain."
-    #   block:
-    #     - debug:
-    #         msg: |
-    #           Create this TXT record in your DNS public zone
-    #           Name: _ocp-preflight-challenge.{{ baseDomain }}
-    #           Value: "{{ clusterName }}"
-    #           TTL: 3  <- something very short
-    #       
-    #     - pause:
-    # 
-    #     - name: "Confirm that challenge TXT record exists"
-    #       assert:
-    #         that: "'{{ clusterName }}' == lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT')"
-    #         success_msg: "Correct record found"
-    #         fail_msg:    "Incorrect challenge value of {{ lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT') }}"
+    - name: "Confirm that challenge TXT record exists"
+      assert:
+        that: "'{{ clusterName }}' == lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT')"
+        success_msg: "Correct record found"
+        fail_msg:    "Incorrect challenge value of {{ lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT') }}"
 ...
