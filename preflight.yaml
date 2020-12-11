@@ -58,12 +58,7 @@
 
     - name: "Confirm key pair"
       include_tasks: tasks/keys.yaml
-<<<<<<< HEAD
-  
-=======
-
-
->>>>>>> 6e36f170f66678c7c8057407b53a8d1a2272631b
+    
     - block:
         - name: "Generate DNS zone template"
           template:
