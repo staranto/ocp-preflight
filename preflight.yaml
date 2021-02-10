@@ -25,7 +25,7 @@
 
 # Usage:
 # 1. git clone https://github.com/staranto/ocp-preflight
-# 2. Review, understand and then edit roles/common/default.yaml.
+# 2. Review, understand and then edit roles/common/defaults/main.yaml.
 #    Then review it again.  Then have someone else review it.
 # 3. ansible-playbook ocp-preflight.yaml -i <inventory_file>
 
