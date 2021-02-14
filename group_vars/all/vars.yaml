@@ -6,4 +6,15 @@ portsToScan:
   - 10259 
   - 30000
   - 32767
+
+rhcos:
+  ipxe:
+    initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-initramfs.{{ ocpArch }}.img"
+    kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-kernel-{{ ocpArch }}"
+    raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
+    rootfs:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-rootfs.{{ ocpArch }}.img"
+  iso:
+    iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live.iso"
+  assisted:
+    discovery: "rhcos/discovery_image_{{ clusterName }}.iso"
 ...
