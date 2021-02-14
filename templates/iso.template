@@ -1,0 +1,6 @@
+# Boot the {{ hostvars[item].inventory_hostname_short }}-{{ clusterName }} VM
+# from the {{ rhcos[boot].iso }} live ISO and enter the following command:
+
+sudo coreos-installer install /dev/sda \
+    --insecure-ignition \
+    --ignition-url http://{{ hostvars[groups['http'][0]].ip }}/{{ clusterName }}/{{ fname }}.ign
