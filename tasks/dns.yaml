@@ -55,4 +55,5 @@
         that: "'{{ clusterName }}' == lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT')"
         success_msg: "Correct record found"
         fail_msg:    "Incorrect challenge value of {{ lookup('dig', '_ocp-preflight-challenge.{{ baseDomain }}/TXT') }}"
+      ignore_errors: true
 ...
