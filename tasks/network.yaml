@@ -1,5 +1,5 @@
 ---
-- name: "Confirm that boostrap can listen on port ranges"
+- name: "Confirm that bootstrap can listen on port ranges"
   wait_for:
     host: "{{ item[0] }}"
     port: "{{ item[1] }}"
@@ -7,6 +7,7 @@
   with_nested:
     - "{{ query('inventory_hostnames', 'bootstrap') }}"
     - "{{ hostvars[groups['bootstrap'][0]].portsToScan }}"
+  tags: [ never, sentinel ]
 
 - name: "Confirm that masters can listen on port ranges"
   wait_for:
@@ -16,4 +17,5 @@
   with_nested:
     - "{{ query('inventory_hostnames', 'masters') }}"
     - "{{ hostvars[groups['masters'][0]].portsToScan }}"
+  tags: [ never, sentinel ]
 ...
