@@ -22,9 +22,14 @@ _ocp-preflight-challenge.{{ baseDomain }}. IN TXT 	"{{ clusterName }}"
 ; Each master needs to have an A record for its "OCP identity" and a matching
 ; A record for its on-board etcd service.  There also needs to be a SRV that
 ; references that etcd hostname.
+
+; ***************
+; etcd- and _etcd- entries are not required from OCP 4.4.
+; ***************
 {% for host in groups['masters'] %}
 {{ '{:36}'.format(hostvars[host].inventory_hostname_short~"."~clusterName) }} IN A {{ hostvars[host].ip }}
 {% endfor %}
+
 {% for host in groups['masters'] %}
 {{ '{:36}'.format("etcd-"~(loop.index-1)~"."~clusterName) }} IN A {{ hostvars[host].ip }}
 {% endfor %}
@@ -41,10 +46,10 @@ _ocp-preflight-challenge.{{ baseDomain }}. IN TXT 	"{{ clusterName }}"
 {{ '{:36}'.format(hostvars[groups['dns'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['dns'][0]].ip }}
 {{ '{:36}'.format(hostvars[groups['http'][0]].inventory_hostname_short) }} IN A {{ hostvars[groups['http'][0]].ip }}
 {{ '{:36}'.format(hostvars[groups['bootstrap'][0]].inventory_hostname_short~"."~clusterName) }} IN A {{ hostvars[groups['bootstrap'][0]].ip }}
-{{ '{:36}'.format(hostvars[groups['loadbalancer'][0]].inventory_hostname_short~".") }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
-{{ '{:36}'.format("api."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
-{{ '{:36}'.format("api-int."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
-{{ '{:36}'.format("*.apps."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip }}
+{{ '{:36}'.format(hostvars[groups['loadbalancer'][0]].inventory_hostname_short~".") }} IN A {{ hostvars[groups['loadbalancer'][0]].ip[0] }}
+{{ '{:36}'.format("api."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip[0] }}
+{{ '{:36}'.format("api-int."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip[0] }}
+{{ '{:36}'.format("*.apps."~clusterName) }} IN A {{ hostvars[groups['loadbalancer'][0]].ip[0] }}
 
 ; Reverse lookups.  I don't think these are technically needed by the
 ; the cluster, but they are needed by ocp-preflight as DNS resolution
