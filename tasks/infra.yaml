@@ -25,13 +25,9 @@
 
 - name: "Confirm that all RHCOS bootstrap images are available on HTTP server"
   get_url:
-    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}/{{ item }}"
+    url: "http://{{ hostvars[groups['http'][0]].inventory_hostname }}/{{ item.value }}"
     dest: "{{ tempfile.path }}"
-  loop:
-    - "{{ rhcos.initramfs }}"
-    - "{{ rhcos.kernel }}"
-    - "{{ rhcos.rootfs }}"
-
+  loop: "{{ rhcos[boot] | dict2items }}"
   loop_control:
     label: ""
 
