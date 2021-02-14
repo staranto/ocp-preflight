@@ -40,15 +40,6 @@
 
   tasks:
 
-    - set_fact:
-        rhcos:
-          initramfs: "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-initramfs.{{ ocpArch }}.img"
-          #iso:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live.{{ ocpArch }}.iso"
-          kernel:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-kernel-{{ ocpArch }}"
-          #raw:       "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-metal.{{ ocpArch }}.raw.gz"
-          rootfs:    "rhcos/rhcos-{{ cosVersion }}-{{ ocpArch }}-live-rootfs.{{ ocpArch }}.img"
-          discovery: "discovery_image_ocpz.iso"
-
     - name: "Setup output directory"
       include_tasks: tasks/outdir.yaml
       tags: [ always ]
