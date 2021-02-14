@@ -16,7 +16,7 @@
 baseDomain: "0.taranto.dev"
 clusterCIDR: "10.128.0.0/14"
 clusterHostPrefix: "23"  
-clusterName: "ocpb"
+clusterName: "ocp99"
 serviceCIDR: "172.30.0.0/16"
 
 # clusterName and baseDomain will be combined into the 
@@ -72,7 +72,7 @@ ocpArch: "x86_64"
 outdir: "./out"
 
 
-# What type of bootstrap artifacts do you want to create?
+# What type of bootstrap artifacts do you want to create and confirm?
 # ipxe, iso, pxe or all
-boot: "ipxe"
+boot: "iso"
 ...
